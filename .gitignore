@@ -30,3 +30,15 @@
 *.exe
 *.out
 *.app
+
+# Visual Studio directory
+.vs
+
+# Build
+out
+
+# Library
+lib
+
+# Documentation
+doc
