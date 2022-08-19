@@ -12,19 +12,24 @@ set(INCLUDES PRIVATE
 	${PROJECT_SOURCE_DIR}
 	${CMAKE_SOURCE_DIR}/Shaders
 	${CMAKE_SOURCE_DIR}/lib/freeglut/include
+	${CMAKE_SOURCE_DIR}/lib/glew/include
 )
 
 target_include_directories (${PROJECT_NAME} PRIVATE ${INCLUDES})
 
-# Initalization of freeglut
+
+# Initalization of freeglut and glew
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 	set(FREEGLUT PRIVATE ${CMAKE_SOURCE_DIR}/lib/freeglut/x64/freeglut.lib)
+    set(GLEW PRIVATE ${CMAKE_SOURCE_DIR}/lib/glew/x64/glew32.lib)
 elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
 	set(FREEGLUT PRIVATE ${CMAKE_SOURCE_DIR}/lib/freeglut/freeglut.lib)
+    set(GLEW PRIVATE ${CMAKE_SOURCE_DIR}/lib/glew/Win32/glew32.lib)
 endif()
 
 target_link_libraries (${PROJECT_NAME}
 	${FREEGLUT}
+	${GLEW}
 	Shaders
 	opengl32
 	glu32

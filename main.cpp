@@ -1,6 +1,7 @@
 ﻿#include <StageManager.hpp>
 #include <Windows.h>
 #include <memory>
+#include <GL/glut.h>
 
 constexpr unsigned REFRESH_DISPLAY = 13u; // 60 fps
 constexpr unsigned TIME = 100u; // 100 milisekund

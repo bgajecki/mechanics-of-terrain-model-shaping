@@ -9,25 +9,29 @@ add_executable (${PROJECT_NAME} WIN32 main.cpp)
 
 set(INCLUDES PRIVATE
 	${PROJECT_SOURCE_DIR}
-	${PROJECT_SOURCE_DIR}/Shaders
+	${PROJECT_SOURCE_DIR}/Engine
 	${PROJECT_SOURCE_DIR}/Stages
 	${PROJECT_SOURCE_DIR}/lib/freeglut/include
+	${PROJECT_SOURCE_DIR}/lib/glew/include
 )
 
 target_include_directories (${PROJECT_NAME} PRIVATE ${INCLUDES})
 
-# Initalization of freeglut
+# Initalization of freeglut and glew
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 	set(FREEGLUT PRIVATE ${PROJECT_SOURCE_DIR}/lib/freeglut/x64/freeglut.lib)
+    set(GLEW PRIVATE ${PROJECT_SOURCE_DIR}/lib/glew/x64/glew32.lib)
 elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
 	set(FREEGLUT PRIVATE ${PROJECT_SOURCE_DIR}/lib/freeglut/freeglut.lib)
+    set(GLEW PRIVATE ${PROJECT_SOURCE_DIR}/lib/glew/Win32/glew32.lib)
 endif()
 
-add_subdirectory("Shaders")
+add_subdirectory("Engine")
 add_subdirectory("Stages")
 
 target_link_libraries (${PROJECT_NAME}
 	${FREEGLUT}
+	${GLEW}
 	Shaders
 	Stages
 	opengl32
