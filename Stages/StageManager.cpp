@@ -1,14 +1,17 @@
 ﻿#include "StageManager.hpp"
+#include "StageManager.hpp"
 
-StageManager::StageManager() : menu(this->options), presentation(this->options),
-	currentStage(&this->menu)
+StageManager::StageManager()
 {
-	
+	//this->menu = this->createScene<Menu>(options);
+	this->presentation = this->createScene<Presentation>(options);
+	this->currentScene = this->presentation;
+	this->currentStage = this->presentation;
 }
 
 void StageManager::Display()
 {
-	this->currentStage->Display();
+	this->draw();
 }
 
 void StageManager::Reshape(int width, int height)

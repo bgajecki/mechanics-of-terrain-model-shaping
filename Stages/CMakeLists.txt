@@ -1,6 +1,6 @@
 ﻿cmake_minimum_required (VERSION 3.8)
 
-project ("Stages")
+project ("stages")
 
 aux_source_directory(${PROJECT_SOURCE_DIR} SRCS)
 
@@ -10,9 +10,10 @@ target_include_directories (${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR})
 
 set(INCLUDES PRIVATE
 	${PROJECT_SOURCE_DIR}
-	${CMAKE_SOURCE_DIR}/Shaders
+	${CMAKE_SOURCE_DIR}/engine
 	${CMAKE_SOURCE_DIR}/lib/freeglut/include
 	${CMAKE_SOURCE_DIR}/lib/glew/include
+	#${CMAKE_SOURCE_DIR}/lib/stb
 )
 
 target_include_directories (${PROJECT_NAME} PRIVATE ${INCLUDES})
@@ -30,10 +31,11 @@ endif()
 target_link_libraries (${PROJECT_NAME}
 	${FREEGLUT}
 	${GLEW}
-	Shaders
+	engine
 	opengl32
 	glu32
 	gdi32
+	glm
 )
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)

@@ -11,17 +11,7 @@ std::unique_ptr<StageManager> stageManager;
 
 void Display()
 {
-	// Background color
-	glClearColor(0.0, 0.0, 0.0, 0.0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity();
-	glPushMatrix();
-	//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	// Start painting
 	stageManager->Display();
-	// End painting
-	glFlush();
-	glPopMatrix();
 	glutSwapBuffers();
 }
 
@@ -54,20 +44,32 @@ void RefreshDisplay(int t)
 void Time(int t)
 {
 	stageManager->Time(t);
-	glutTimerFunc(TIME, Time, 0);
+	glutTimerFunc(1u, Time, 0);
 }
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+//int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+int main()
 {
-	srand((unsigned int)time(NULL));
-
 	int argc = 1;
 	char* argv[1] = { (char*)"" };
+
+	srand((unsigned int)time(NULL));
+	SetProcessDPIAware();
+
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowSize(GetSystemMetrics(SM_CXSCREEN),
 		GetSystemMetrics(SM_CYSCREEN)); // Maximum resolution
 	glutCreateWindow(WINDOW_NAME);
+
+	GLenum err = glewInit();
+	if (GLEW_OK != err)
+	{
+		/* Problem: glewInit failed, something is seriously wrong. */
+		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+	}
+	fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
+
 	glutFullScreen();
 	glutDisplayFunc(Display);
 	glutReshapeFunc(Reshape);
@@ -78,7 +80,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	/* Timer functions */
 	glutTimerFunc(REFRESH_DISPLAY, RefreshDisplay, 0);
-	glutTimerFunc(TIME, Time, 0);
+	glutTimerFunc(1u, Time, 0);
 
 	// OpenGL initialization
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

@@ -1,17 +1,26 @@
 ﻿#pragma once
 
-#include <ShaderManager.hpp>
+#include <Scene.hpp>
 #include "Stage.hpp"
+#include "Terrain.hpp"
+#include "Water.hpp"
 #include "Options.hpp"
+#include <glm/gtc/matrix_transform.hpp>
+#include <cmath>
+#include <GL/glut.h>
+#include <random>
+#include <Chunk.hpp>
 
 
-class Presentation : public Stage
+
+class Presentation final : public Stage, public engine::Scene
 {
 public:
+
 	/**
 	* Presentation constructor.
 	*/
-	Presentation(Options&);
+	Presentation(engine::SceneManager& sceneManager, Options&);
 
 	virtual void Display() override final;
 
@@ -29,4 +38,23 @@ public:
 
 private:
 	Options& options;
+
+	void rotateYaw(float);
+	void rotatePitch(float);
+	void updateCameraPosition(float&, float&, float);
+	float inline getDistance(engine::Position point, engine::Normal& normal);
+	bool inline pointAbovePlane(engine::Position&, engine::Position&, engine::Position&, engine::Position&);
+	void rain();
+	
+
+
+	float yaw, pitch;
+	Terrain* terrain;
+	Water* water;
+	engine::Chunk* chunk;
+	engine::Texture texture;
+	engine::Program terrainProgram, waterProgram, chunkProgram;
+	engine::Shader meshVertexShader, particleVertexShader, chunkVertexShader,
+		waterFragmentShader, terrainFragmentShader,  chunkFragmentShader,
+		waterGeometryShader;
 };

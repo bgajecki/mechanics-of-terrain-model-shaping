@@ -2,15 +2,15 @@
 
 #include "Menu.hpp"
 #include "Presentation.hpp"
-#include "Options.hpp"
-
+#include <glm/gtc/matrix_transform.hpp>
+#include <GL/glut.h>
 /**
 * @brief A stage manager class that manages program stages.
 * 
 * Stage manager have two stages,
 * the first one for menu and the second one for mechanic presentation.
 */
-class StageManager : public Stage
+class StageManager final : public Stage, public engine::SceneManager
 {
 public:
 	/**
@@ -23,9 +23,9 @@ public:
 	virtual void Reshape(int width, int height) override final;
 
 	virtual void Special(int key, int x, int y) override final;
-
+	
 	void OnKeyDown(unsigned char key, int x, int y) override final;
-
+	
 	virtual void OnMouseClick(int button, int state, int x, int y) override final;
 
 	virtual void RefreshDisplay(int t) override final;
@@ -33,8 +33,12 @@ public:
 	virtual void Time(int t) override final;
 
 private:
-	Menu menu;
-	Presentation presentation;
+
+	engine::SceneManager sceneManager;
 	Options options;
+
 	Stage* currentStage;
+
+	Menu* menu;
+	Presentation* presentation;
 };

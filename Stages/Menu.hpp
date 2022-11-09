@@ -1,16 +1,19 @@
 ﻿#pragma once
 
-#include <ShaderManager.hpp>
+#include <Scene.hpp>
 #include "Stage.hpp"
 #include "Options.hpp"
+#include <glm/gtc/matrix_transform.hpp>
+#include <GL/glut.h>
 
-class Menu : public Stage
+class Menu final : public Stage,  public engine::Scene
 {
 public:
 	/**
 	* Menu constructor.
 	*/
-	Menu(Options&);
+	Menu(engine::SceneManager& sceneManager, Options& options);
+	~Menu() = default;
 
 	virtual void Display() override final;
 
@@ -27,5 +30,10 @@ public:
 	virtual void Time(int t) override final;
 
 private:
+
 	Options& options;
+	//engine::Mesh* mesh;
+	//engine::Texture texture;
+	engine::Program program;
+	engine::Shader vertexShader, fragmentShader;
 };
