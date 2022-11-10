@@ -11,6 +11,7 @@ std::unique_ptr<StageManager> stageManager;
 
 void Display()
 {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	stageManager->Display();
 	glutSwapBuffers();
 }

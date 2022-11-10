@@ -1,17 +1,25 @@
 #pragma once
 
-#include <Particles.hpp>
-#include <random>
+#include <Mesh.hpp>
+#include <algorithm>
+#include <numeric>
 
-class Water final : public engine::Particles
+class Water final : public engine::Mesh
 {
 public:
 	/**
-	* Water constructor.
+	* Terrain constructor.
 	*/
-	Water();
+	Water(engine::Mesh*);
+	/**
+	* Terrain constructor.
+	*/
 	~Water() = default;
-
-	void rain();
+	/**
+	* Terrain constructor.
+	*/
+	void update(bool);
 private:
+	std::vector<engine::Vertex>& terrainVertices;
+	float level, minimumLevel, levelRise, scale;
 };

@@ -3,6 +3,7 @@
 #include <Scene.hpp>
 #include "Stage.hpp"
 #include "Terrain.hpp"
+#include "Rain.hpp"
 #include "Water.hpp"
 #include "Options.hpp"
 #include <glm/gtc/matrix_transform.hpp>
@@ -42,19 +43,14 @@ private:
 	void rotateYaw(float);
 	void rotatePitch(float);
 	void updateCameraPosition(float&, float&, float);
-	float inline getDistance(engine::Position point, engine::Normal& normal);
-	bool inline pointAbovePlane(engine::Position&, engine::Position&, engine::Position&, engine::Position&);
-	void rain();
 	
-
-
 	float yaw, pitch;
 	Terrain* terrain;
+	Rain* rain;
 	Water* water;
-	engine::Chunk* chunk;
 	engine::Texture texture;
-	engine::Program terrainProgram, waterProgram, chunkProgram;
-	engine::Shader meshVertexShader, particleVertexShader, chunkVertexShader,
-		waterFragmentShader, terrainFragmentShader,  chunkFragmentShader,
-		waterGeometryShader;
+	engine::Program terrainProgram, rainProgram, waterProgram;
+	engine::Shader meshVertexShader, rainVertexShader,
+		rainFragmentShader, terrainFragmentShader, waterFragmentShader,
+		rainGeometryShader;
 };
