@@ -2,6 +2,7 @@
 
 #include "Menu.hpp"
 #include "Presentation.hpp"
+#include "PresentationVoxel.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <GL/glut.h>
 /**
@@ -41,4 +42,5 @@ private:
 
 	Menu* menu;
 	Presentation* presentation;
+	PresentationVoxel* presentationVoxel;
 };

@@ -1,12 +1,14 @@
 ﻿#include "StageManager.hpp"
-#include "StageManager.hpp"
 
 StageManager::StageManager()
 {
 	//this->menu = this->createScene<Menu>(options);
-	this->presentation = this->createScene<Presentation>(options);
-	this->currentScene = this->presentation;
-	this->currentStage = this->presentation;
+	//this->presentation = this->createScene<Presentation>(options);
+	//this->currentScene = this->presentation;
+	//this->currentStage = this->presentation;
+	this->presentationVoxel = this->createScene<PresentationVoxel>(options);
+	this->currentScene = this->presentationVoxel;
+	this->currentStage = this->presentationVoxel;
 }
 
 void StageManager::Display()

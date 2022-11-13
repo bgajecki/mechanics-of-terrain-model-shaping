@@ -47,21 +47,19 @@ Water::Water(engine::Mesh* terrain)
 	vertex.textureCoordinate = glm::vec2(0.0f, 1.0f);
 	this->vertices.push_back(vertex);
 
-	this->indices.push_back(0);
-	this->indices.push_back(1);
-	this->indices.push_back(2);
-
-	this->indices.push_back(0);
-	this->indices.push_back(2);
 	this->indices.push_back(3);
-	
-	std::reverse(this->indices.begin(), this->indices.end());
+	this->indices.push_back(2);
+	this->indices.push_back(0);
+
+	this->indices.push_back(2);
+	this->indices.push_back(1);
+	this->indices.push_back(0);
 }
 
 void Water::update(const bool isRaining)
 {
 	
-	for (unsigned i = 0u; i < this->terrainVertices.size(); i++)
+	for (size_t i = 0u; i < this->terrainVertices.size(); i++)
 	{
 		float difference = this->level - this->terrainVertices[i].position.y;
 
@@ -70,7 +68,7 @@ void Water::update(const bool isRaining)
 			std::vector<engine::Vertex*> sameVertices;
 			engine::Normal normal = glm::vec3(0.0f, 0.0f, 0.0f);
 
-			for (unsigned j = 0; j < this->terrainVertices.size(); j++)
+			for (size_t j = 0u; j < this->terrainVertices.size(); j++)
 			{
 				if (this->terrainVertices[i].position == this->terrainVertices[j].position)
 				{
@@ -79,9 +77,9 @@ void Water::update(const bool isRaining)
 				}
 			}
 			normal /= sameVertices.size();
-			normal.y *= 0.5;
+			normal.y *= 0.5f;
 
-			for (unsigned j = 0u; j < sameVertices.size(); j++)
+			for (size_t j = 0u; j < sameVertices.size(); j++)
 			{
 				sameVertices[j]->position += -normal * difference * this->scale;
 			}
@@ -91,6 +89,17 @@ void Water::update(const bool isRaining)
 
 		}
 	}
+
+	for (size_t i = 0u; i < this->indices.size(); i+=3u)
+	{
+		engine::Vertex a = this->vertices[this->indices[i]];
+		engine::Vertex b = this->vertices[this->indices[i+1]];
+		engine::Vertex c = this->vertices[this->indices[i+2]];
+		engine::Position ab = b.position - a.position;
+		engine::Position bc = b.position - a.position;
+		a.normal = b.normal = c.normal = glm::normalize(glm::cross(ab, bc));
+	}
+
 	this->level += isRaining ? this->levelRise : -this->levelRise;
 	if(this->level > this->minimumLevel)
 		for (auto& vertex : this->vertices)

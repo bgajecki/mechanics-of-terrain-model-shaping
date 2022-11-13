@@ -25,7 +25,7 @@ void Rain::run()
 	
 	if (this->isRaining)
 	{
-		const unsigned render_size = 3u;
+		const unsigned renderSize = 3u;
 		std::random_device device;
 		std::mt19937 generator(device());
 		std::uniform_real_distribution<float> distribution(-1.f, 1.f), y_distrubution(1.9f, 2.1f);
@@ -42,7 +42,7 @@ void Rain::run()
 				particle.lifespan = 100.0f;
 				particle.acceleration = glm::vec3(0.0, -0.001, 0.0);
 				particle.velocity = glm::vec3(0.0, -0.003, 0.0);
-				if (i >= render_size)
+				if (i >= renderSize)
 					break;
 				else
 					i++;
