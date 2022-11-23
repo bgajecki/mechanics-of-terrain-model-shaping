@@ -1,6 +1,4 @@
 ﻿#include "Menu.hpp"
-#include "Menu.hpp"
-
 
 Menu::Menu(engine::SceneManager& sceneManager, Options& options)
 	: engine::Scene(sceneManager), options(options)

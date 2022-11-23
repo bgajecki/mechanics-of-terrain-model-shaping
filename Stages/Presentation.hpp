@@ -39,12 +39,6 @@ public:
 
 private:
 	Options& options;
-
-	void rotateYaw(float);
-	void rotatePitch(float);
-	void updateCameraPosition(float&, float&, float);
-	
-	float yaw, pitch;
 	Terrain* terrain;
 	Rain* rain;
 	Water* water;

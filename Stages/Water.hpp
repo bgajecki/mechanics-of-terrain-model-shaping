@@ -20,6 +20,6 @@ public:
 	*/
 	void update(bool);
 private:
-	std::vector<engine::Vertex>& terrainVertices;
+	std::vector<engine::MeshVertex>& terrainVertices;
 	float level, minimumLevel, levelRise, scale;
 };

@@ -2,7 +2,6 @@
 
 layout(location = 0) out vec4 color;
 
-uniform mat4 mvp;
 uniform vec3 viewPosition;
 
 in vec3 FragPosition;

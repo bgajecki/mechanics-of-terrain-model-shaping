@@ -7,9 +7,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <cmath>
 #include <GL/glut.h>
-
-
-
+#include "Skydome.hpp"
+#include "Button.hpp"
 
 class PresentationVoxel final : public Stage, public engine::Scene
 {
@@ -36,13 +35,11 @@ public:
 
 private:
 	Options& options;
-
-	void rotateYaw(float);
-	void rotatePitch(float);
-	void updateCameraPosition(float&, float&, float);
-	
-	float yaw, pitch;
-	engine::Program chunkProgram;
-	engine::Shader chunkVertexShader, chunkFragmentShader;
+	engine::Texture skyTexture, buttonTexture;
+	engine::Program chunkProgram, skydomeProgram, userInterfaceProgram;
+	engine::Shader chunkVertexShader, chunkFragmentShader, meshVertexShader, skydomeFragmentShader, userInterfaceVertexShader, userInterfaceFragmentShader;
+	Button* button;
 	World* world;
+	Skydome* skydome;
+	engine::Matrix userInterfaceProjection;
 };

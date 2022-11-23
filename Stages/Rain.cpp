@@ -3,7 +3,7 @@
 Rain::Rain()
 	: engine::Particles(), isRaining(false)
 {
-	this->particles.resize(1000u);
+	this->particles.resize(500u);
 
 	for (auto& particle : this->particles)
 	{
@@ -25,7 +25,7 @@ void Rain::run()
 	
 	if (this->isRaining)
 	{
-		const unsigned renderSize = 3u;
+		constexpr unsigned renderSize = 3u;
 		std::random_device device;
 		std::mt19937 generator(device());
 		std::uniform_real_distribution<float> distribution(-1.f, 1.f), y_distrubution(1.9f, 2.1f);
