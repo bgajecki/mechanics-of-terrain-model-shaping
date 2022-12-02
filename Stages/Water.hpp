@@ -3,22 +3,24 @@
 #include <Mesh.hpp>
 #include <algorithm>
 #include <numeric>
+#include <array>
 
 class Water final : public engine::Mesh
 {
 public:
 	/**
-	* Terrain constructor.
+	* Water constructor.
 	*/
 	Water(engine::Mesh*);
 	/**
-	* Terrain constructor.
+	* Water destructor.
 	*/
 	~Water() = default;
 	/**
-	* Terrain constructor.
+	* Water work
 	*/
 	void update(bool);
+
 private:
 	std::vector<engine::MeshVertex>& terrainVertices;
 	float level, minimumLevel, levelRise, scale;

@@ -15,7 +15,7 @@ const float circlePiece = float(2.0 * M_PI) / float(circleVertices);
 
 void main()
 {
-    mat4 mvp = projection * view;
+    mat4 mvp = projection * view * model;
     vec4 circleCenterPosition, bottom, up;
     circleCenterPosition = gl_in[0].gl_Position + vec4(0.0, scale, 0.0, 0.0);
     bottom = gl_in[0].gl_Position;

@@ -9,14 +9,14 @@ public:
 	/**
 	* Responsible for displaying screen.
 	*/
-	virtual void Display() {};
+	virtual void Display();
 
 	/**
 	* Fit the changed screen size.
 	* @param width New width of screen size.
 	* @param height New height of screen size.
 	*/
-	virtual void Reshape(int width, int height) {};
+	virtual void Reshape(int width, int height);
 
 	/**
 	* Special keyboard callback.
@@ -24,7 +24,7 @@ public:
 	* @param x Horizontal cursor position.
 	* @param y Vertical cursor position.
 	*/
-	virtual void Special(int key, int x, int y) {};
+	virtual void Special(int key, int x, int y);
 
 	/**
 	* Keyboard callback.
@@ -32,7 +32,14 @@ public:
 	* @param x Horizontal cursor position.
 	* @param y Vertical cursor position.
 	*/
-	virtual void OnKeyDown(unsigned char key, int x, int y) {};
+	virtual void OnKeyDown(unsigned char key, int x, int y);
+
+	/**
+	* Motion callback.
+	* @param x Horizontal cursor position.
+	* @param y Vertical cursor position.
+	*/
+	virtual void Motion(int x, int y);
 
 	/**
 	* Mouse callback.
@@ -41,17 +48,17 @@ public:
 	* @param x Horizontal cursor position.
 	* @param y Vertical cursor position.
 	*/
-	virtual void OnMouseClick(int button, int state, int x, int y) {};
+	virtual void OnMouseClick(int button, int state, int x, int y);
 
 	/**
 	* Timer callback responsible for refreshing display screen.
-	* @param t Time period.
+	* @param dt Time period.
 	*/
-	virtual void RefreshDisplay(int t) {};
+	virtual void RefreshDisplay(int dt);
 
 	/**
 	* Timer callback resposible for operation of the application.
-	* @param t Time period.
+	* @param dt Time period.
 	*/
-	virtual void Time(int t) {};
+	virtual void Time(int dt);
 };

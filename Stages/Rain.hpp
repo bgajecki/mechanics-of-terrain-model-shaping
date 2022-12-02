@@ -22,5 +22,8 @@ public:
 	*/
 	void run();
 
+	/**
+	* Water constructor.
+	*/
 	bool isRaining;
 };

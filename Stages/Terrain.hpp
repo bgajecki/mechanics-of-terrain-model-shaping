@@ -10,8 +10,4 @@ public:
 	*/
 	Terrain();
 	~Terrain() = default;
-
-
-private:
-
 };

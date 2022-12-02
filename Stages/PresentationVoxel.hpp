@@ -7,11 +7,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <cmath>
 #include <GL/glut.h>
-#include "Skydome.hpp"
-#include "Button.hpp"
+#include <array>
+#include "Skybox.hpp"
+#include "UserInterface/UserInterface.hpp"
 
 class PresentationVoxel final : public Stage, public engine::Scene
 {
+	
 public:
 
 	/**
@@ -34,12 +36,96 @@ public:
 	virtual void Time(int t) override final;
 
 private:
+	
+	/**
+	* Initialize shaders for futher use.
+	*/
+	void initializeShaders();
+
+	/**
+	* Initialize user interface.
+	*/
+	void initializeUserInterface();
+
+	/**
+	* Initialize objects.
+	*/
+	void initializeObjects();
+
+
+
+	/**
+	* Options for the all stages.
+	*/
 	Options& options;
-	engine::Texture skyTexture, buttonTexture;
-	engine::Program chunkProgram, skydomeProgram, userInterfaceProgram;
-	engine::Shader chunkVertexShader, chunkFragmentShader, meshVertexShader, skydomeFragmentShader, userInterfaceVertexShader, userInterfaceFragmentShader;
-	Button* button;
+
+	/**
+	* Texture of the sky.
+	*/
+	engine::Texture skyTexture; 
+	
+	/**
+	* Texture of RainOff button.
+	*/
+	engine::Texture rainOffTexture;
+
+	/**
+	* Texture of RainOn button.
+	*/
+	engine::Texture rainOnTexture;
+
+	/**
+	* Texture of pause button.
+	*/
+	engine::Texture pauseTexture;
+
+	/**
+	* Texture of play button.
+	*/
+	engine::Texture playTexture;
+
+	/**
+	* Texture of playx2 button.
+	*/
+	engine::Texture playx2Texture;
+
+	/**
+	* Texture of playx3 button.
+	*/
+	engine::Texture playx3Texture;
+
+	/**
+	* Chunk program contains chunk vertex and fragment shaders.
+	*/
+	engine::Program chunkProgram;
+	
+	/**
+	* Skybox program contains simply vertex and fragment shaders.
+	*/
+	engine::Program skyboxProgram;
+
+	/**
+	* User interface.
+	*/
+	UserInterface userInterface;
+
+	/**
+	* Single biom presenting mechanics of terrain model shaping using voxel technicues.
+	*/
 	World* world;
-	Skydome* skydome;
-	engine::Matrix userInterfaceProjection;
+
+	/**
+	* Skybox responsible for the passage of time.
+	*/
+	Skybox* skybox;
+
+	/**
+	* Limitation for too fast presentation work.
+	*/
+	int timeLimit;
+
+	/**
+	* Time pausue.
+	*/
+	bool pause;
 };

@@ -1,10 +1,12 @@
-#include "Water.hpp"
+﻿#include "Water.hpp"
 
 Water::Water(engine::Mesh* terrain)
-	: engine::Mesh(), terrainVertices(terrain->vertices), levelRise(0.0001f), scale(0.0001f)
+	: engine::Mesh(), terrainVertices(terrain->vertices), levelRise(0.0001f), scale(0.0001f), level(0.0f), minimumLevel(0.0f)
 {
 	if (this->terrainVertices.empty())
 		return;
+
+	this->primitivesType = GL_PATCHES;
 
 	auto [min_x, max_x] = std::minmax_element(this->terrainVertices.begin(), this->terrainVertices.end(), [](const engine::MeshVertex& v1, const engine::MeshVertex& v2) -> bool
 	{
@@ -84,17 +86,17 @@ void Water::update(const bool isRaining)
 			}
 		}
 	}
-
-	for (size_t i = 0u; i < this->indices.size(); i+=3u)
+	/*
+	for (size_t i = 0u; i < this->terrainVertices.size(); i+=3u)
 	{
-		engine::MeshVertex a = this->vertices[this->indices[i]];
-		engine::MeshVertex b = this->vertices[this->indices[i+1]];
-		engine::MeshVertex c = this->vertices[this->indices[i+2]];
+		engine::MeshVertex& a = this->terrainVertices[i];
+		engine::MeshVertex& b = this->terrainVertices[i+1];
+		engine::MeshVertex& c = this->terrainVertices[i+2];
 		engine::Position ab = b.position - a.position;
 		engine::Position bc = b.position - a.position;
 		a.normal = b.normal = c.normal = glm::normalize(glm::cross(ab, bc));
 	}
-
+	*/
 	this->level += isRaining ? this->levelRise : -this->levelRise;
 	if(this->level > this->minimumLevel)
 		for (auto& vertex : this->vertices)

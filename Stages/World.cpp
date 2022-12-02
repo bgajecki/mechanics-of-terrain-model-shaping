@@ -1,7 +1,7 @@
 #include "World.hpp"
 
 World::World()
-	: engine::Chunk<engine::Color, NUMBER_OF_VOXEL_TYPES>() , isRaining(true), terrainColor(0.0f, 1.0f, 0.0f, 1.0f), waterColor(0.0f, 0.0f, 1.0f, 1.0f), terrainCorrosionScale(0.1f), waterEvaporationScale(0.1f)
+	: engine::Chunk<engine::Color, NUMBER_OF_VOXEL_TYPES>() , isRaining(false), terrainColor(0.0f, 1.0f, 0.0f, 1.0f), waterColor(0.0f, 0.0f, 1.0f, 1.0f), terrainCorrosionScale(0.1f), waterEvaporationScale(0.1f)
 {
     this->resize(64);
     this->setVoxelSize(0.005f);

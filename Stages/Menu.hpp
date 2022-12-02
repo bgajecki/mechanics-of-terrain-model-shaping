@@ -3,10 +3,11 @@
 #include <Scene.hpp>
 #include "Stage.hpp"
 #include "Options.hpp"
+#include "UserInterface.hpp"
 #include <glm/gtc/matrix_transform.hpp>
-#include <GL/glut.h>
+#include <GL/freeglut.h>
 
-class Menu final : public Stage,  public engine::Scene
+class Menu final : public Stage,  public engine::Scene, public UserInterface
 {
 public:
 	/**
@@ -23,17 +24,62 @@ public:
 
 	virtual void OnKeyDown(unsigned char key, int x, int y) override final;
 
+	virtual void Motion(int x, int y) override final;
+
 	virtual void OnMouseClick(int button, int state, int x, int y) override final;
 
-	virtual void RefreshDisplay(int t) override final;
+	virtual void RefreshDisplay(int dt) override final;
 
-	virtual void Time(int t) override final;
+	virtual void Time(int dt) override final;
 
 private:
+	/**
+	* Presentation constructor.
+	*/
+	void initializeShaders();
 
+	/**
+	* Presentation constructor.
+	*/
+	void initializeUserInterface();
+
+	/**
+	* Presentation constructor.
+	*/
 	Options& options;
-	//engine::Mesh* mesh;
-	//engine::Texture texture;
-	engine::Program program;
-	engine::Shader vertexShader, fragmentShader;
+
+	/**
+	* Presentation constructor.
+	*/
+	engine::Texture presentationMeshTexture;
+	/**
+	* Presentation constructor.
+	*/
+	engine::Texture presentationVoxelTexture;
+	/**
+	* Presentation constructor.
+	*/
+	engine::Texture exitTexture;
+	/**
+	* Presentation constructor.
+	*/
+	engine::Texture backgroundTexture;
+
+	/**
+	* Presentation constructor.
+	*/
+	engine::Texture presentationMeshActiveTexture;
+	/**
+	* Presentation constructor.
+	*/
+	engine::Texture presentationVoxelActiveTexture;
+	/**
+	* Presentation constructor.
+	*/
+	engine::Texture exitActiveTexture;
+
+	/**
+	* Presentation constructor.
+	*/
+	GLint textureSampler;
 };
