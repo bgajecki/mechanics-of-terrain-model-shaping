@@ -84,6 +84,10 @@ void PresentationVoxel::OnKeyDown(unsigned char key, int x, int y)
 
 }
 
+void PresentationVoxel::Motion(int x, int y)
+{
+}
+
 void PresentationVoxel::OnMouseClick(int button, int state, int x, int y)
 {
 	this->userInterface.mouseClick(button, state, x, y);

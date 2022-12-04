@@ -1,5 +1,4 @@
 #include "UserInterface.hpp"
-#include "UserInterface.hpp"
 
 UserInterface::UserInterface()
 	: width(0.0f), height(0.0f), projection(1)
@@ -23,7 +22,7 @@ void UserInterface::mouseClick(int button, int state, int x, int y)
 
 float UserInterface::widthScaling(float scale) const
 {
-	return scale * this->width;;
+	return scale * this->width;
 }
 
 float UserInterface::heightScaling(float scale) const

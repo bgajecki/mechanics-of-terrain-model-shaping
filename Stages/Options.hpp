@@ -3,20 +3,20 @@
 #include "StageSetter.hpp"
 
 /**
-* @brief Storing program options.
+* @brief Storing application options.
 */
 struct Options
 {
 	/**
-	* @brief Storing program options.
+	* @brief Current application width.
 	*/
 	float width;
 	/**
-	* @brief Storing program options.
+	* @brief Current application height.
 	*/
 	float height;
 	/**
-	* @brief Storing program options.
+	* @brief Pointer to the stageSetter class.
 	*/
 	StageSetter* stageSetter;
 };

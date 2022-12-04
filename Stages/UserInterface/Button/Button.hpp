@@ -3,61 +3,58 @@
 #include "Element.hpp"
 
 /**
-* Terrain constructor.
+* @brief Type of function activated by clicking the mouse on the button.
 */
 using ButtonCallback = std::function<void(bool&)>;
 
+/**
+* @brief User interface button class.
+*/
 class Button final : public Element
 {
 public:
 	/**
-	* Terrain constructor.
+	* @brief Button constructor.
 	*/
 	Button();
 	/**
-	* Terrain constructor.
+	* @brief Button destructor.
 	*/
 	~Button() = default;
 
 	/**
-	* Terrain constructor.
+	* @brief Set on mouse click callback.
+	* @param callback Function activated by clicking the mouse on the button.
 	*/
-	void setCallback(ButtonCallback);
+	void setCallback(ButtonCallback callback);
 
-	/**
-	* Terrain constructor.
-	*/
-	virtual void mouseMove(int, int) override;
-
-	/**
-	* Terrain constructor.
-	*/
-	virtual void mouseClick(int, int, int, int) override;
+	virtual void mouseMove(int x, int y) override final;
+	virtual void mouseClick(int button, int state, int x, int y) override final;
 
 
 private:
-	/**
-	* Terrain constructor.
-	*/
-	virtual void setupTextures() override;
+
+	virtual void setupTextures() override final;
 
 	/**
-	* Terrain constructor.
+	* @brief Check is cursor inside button area.
+	* @param x Horizontal cursor position.
+	* @param y Vertical cursor position.
 	*/
-	inline bool checkIsCursorInsideArea(int, int) const;
+	inline bool checkIsCursorInsideArea(int x, int y) const;
 
 	/**
-	* Terrain constructor.
+	* @brief Function activated by clicking the mouse on the button.
 	*/
 	ButtonCallback callback;
 
 	/**
-	* Terrain constructor.
+	* @brief Is button on or off.
 	*/
 	bool isClicked;
 
 	/**
-	* Terrain constructor.
+	* @brief Is cursor inside button area.
 	*/
 	bool isCursorInsideArea;
 };

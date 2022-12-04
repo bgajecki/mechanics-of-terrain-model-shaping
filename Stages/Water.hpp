@@ -5,23 +5,55 @@
 #include <numeric>
 #include <array>
 
+/**
+* @brief Water plane which impact terrain mesh.
+*/
 class Water final : public engine::Mesh
 {
+	/**
+	* @brief Type of reference to terrain vertices.
+	*/
+	using TerrainVertices = std::vector<engine::MeshVertex>&;
 public:
 	/**
-	* Water constructor.
+	* @brief Water constructor.
+	* @param terrain Terrain mesh.
 	*/
-	Water(engine::Mesh*);
+	Water(engine::Mesh* terrain);
+
 	/**
-	* Water destructor.
+	* @brief Water destructor.
 	*/
 	~Water() = default;
+
 	/**
-	* Water work
+	* @brief Update water.
 	*/
 	void update(bool);
 
 private:
-	std::vector<engine::MeshVertex>& terrainVertices;
-	float level, minimumLevel, levelRise, scale;
+	/**
+	* @brief Reference to terrain vertices.
+	*/
+	TerrainVertices terrainVertices;
+
+	/**
+	* @brief Water level.
+	*/
+	float level;
+
+	/**
+	* @brief Minimum water level.
+	*/
+	float minimumLevel;
+
+	/**
+	* @brief Water level rise.
+	*/
+	float levelRise;
+
+	/**
+	* @brief Scale of terrain change.
+	*/
+	float scale;
 };

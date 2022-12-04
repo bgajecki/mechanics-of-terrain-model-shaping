@@ -5,7 +5,7 @@
 #include <random>
 
 /**
-* Terrain constructor.
+* @brief Enum list of voxel types.
 */
 enum VoxelType
 {
@@ -14,124 +14,172 @@ enum VoxelType
 	NUMBER_OF_VOXEL_TYPES
 };
 
+/**
+* @brief World chunk. It has implemented mechanic of terrain model shaping.
+* Have only two types of voxels, the first terrain and the second water.
+* Color is attribute.
+*/
 class World final : public engine::Chunk<engine::Color, NUMBER_OF_VOXEL_TYPES>
 {
 	/**
-	* Terrain constructor.
+	* @brief Function type of condition for singular voxel.
 	*/
 	using VoxelInteractionCondition = std::function<bool(const engine::Voxel&)>;
 	/**
-	* Terrain constructor.
+	* @brief Function type of function for singular voxel.
 	*/
 	using VoxelInteractionFunction = std::function<bool(size_t, size_t, size_t, size_t, size_t, size_t)>;
 public:
 
 	/**
-	* Terrain constructor.
+	* @brief World constructor.
 	*/
 	World();
 	/**
-	* Terrain constructor.
+	* @brief World destructor.
 	*/
 	~World() = default;
 
 	/**
-	* Terrain constructor.
+	* @brief Update the voxels in the chunk.
+	* @param dt Time parameter.
 	*/
-	virtual void update(float) override;
+	void update(float dt);
 
 	/**
-	* Terrain constructor.
+	* @brief Is raining.
 	*/
 	bool isRaining;
 private:
 	/**
-	* Terrain constructor.
+	* @brief Create water voxel on passed parameter.
+	* @param voxel Reference to voxel.
 	*/
-	void createWaterVoxel(engine::Voxel&);
+	void createWaterVoxel(engine::Voxel& voxel);
 
 	/**
-	* Terrain constructor.
+	* @brief Create terrain voxel on passed parameter.
+	* @param voxel Reference to voxel.
 	*/
-	void createTerrainVoxel(engine::Voxel&);
+	void createTerrainVoxel(engine::Voxel& voxel);
 
 	/**
-	* Terrain constructor.
+	* @brief Functionality of physics.
 	*/
 	void physics();
 
 	/**
-	* Terrain constructor.
+	* @brief Rain functionality function.
 	*/
 	void rain();
 
 	/**
-	* Terrain constructor.
+	* @brief Functionality of water physics.
+	* @param x X position of the voxel.
+	* @param y Y position of the voxel.
+	* @param z Z position of the voxel.
 	*/
-	void waterPhysics(size_t, size_t, size_t);
+	void waterPhysics(size_t x, size_t y, size_t z);
 
 	/**
-	* Terrain constructor.
+	* @brief Von Neuamann neighborhood interaction.
+	* @param x1 X position of the main voxel.
+	* @param y1 Y position of the main voxel.
+	* @param z1 Z position of the main voxel.
+	* @param x2 X position of the voxel which interaction refers to.
+	* @param y2 Y position of the voxel which interaction refers to.
+	* @param z2 Z position of the voxel which interaction refers to.
+	* @param condition Function execution condition.
+	* @param function Function which will be executed on voxels which meet the condition.
 	*/
 	bool vonNeumannNeighborhoodInteraction(size_t x1, size_t y1, size_t z1, size_t x2, size_t y2, size_t z2, VoxelInteractionCondition condition, VoxelInteractionFunction function);
 	
 	/**
-	* Terrain constructor.
+	* @brief Moore neighborhood interaction.
+	* @param x1 X position of the main voxel.
+	* @param y1 Y position of the main voxel.
+	* @param z1 Z position of the main voxel.
+	* @param x2 X position of the voxel which interaction refers to.
+	* @param y2 Y position of the voxel which interaction refers to.
+	* @param z2 Z position of the voxel which interaction refers to.
+	* @param condition Function execution condition.
+	* @param function Function which will be executed on voxels which meet the condition.
 	*/
 	bool mooreNeighborhoodInteraction(size_t x1, size_t y1, size_t z1, size_t x2, size_t y2, size_t z2, VoxelInteractionCondition condition, VoxelInteractionFunction function);
 
 	/**
-	* Terrain constructor.
+	* @brief Functionality of water fall.
+	* @param x1 X position of the voxel.
+	* @param y1 Y position of the voxel.
+	* @param z1 Z position of the voxel.
 	*/
-	bool waterFall(size_t, size_t, size_t);
+	bool waterFalls(size_t x, size_t y, size_t z);
 
 	/**
-	* Terrain constructor.
+	* @brief Functionality of water push.
+	* @param x1 X position of the voxel.
+	* @param y1 Y position of the voxel.
+	* @param z1 Z position of the voxel.
 	*/
-	bool waterPush(size_t, size_t, size_t);
+	bool waterPushes(size_t x, size_t y, size_t z);
 
 	/**
-	* Terrain constructor.
+	* @brief Functionality of water evaporation.
+	* @param x1 X position of the voxel.
+	* @param y1 Y position of the voxel.
+	* @param z1 Z position of the voxel.
 	*/
-	void waterEvaporation(size_t, size_t, size_t);
+	void waterEvaporations(size_t x, size_t y, size_t z);
 
 	/**
-	* Terrain constructor.
+	* @brief Functionality of terrain physics.
+	* @param x1 X position of the voxel.
+	* @param y1 Y position of the voxel.
+	* @param z1 Z position of the voxel.
 	*/
-	void terrainPhysics(size_t, size_t, size_t);
+	void terrainPhysics(size_t x, size_t y, size_t z);
 
 	/**
-	* Terrain constructor.
+	* @brief Functionality of terrain fall.
+	* @param x1 X position of the voxel.
+	* @param y1 Y position of the voxel.
+	* @param z1 Z position of the voxel.
 	*/
-	bool terrainFall(size_t, size_t, size_t);
+	bool terrainFalls(size_t x, size_t y, size_t z);
 
 	/**
-	* Terrain constructor.
+	* @brief Functionality of terrain corrosion.
+	* @param x1 X position of the voxel.
+	* @param y1 Y position of the voxel.
+	* @param z1 Z position of the voxel.
 	*/
-	void terrainCorrosion(size_t, size_t, size_t);
+	void terrainCorrosion(size_t x, size_t y, size_t z);
 
 	/**
-	* Terrain constructor.
+	* @brief Searching for near hole.
+	* @param x1 X position of the voxel.
+	* @param y1 Y position of the voxel.
+	* @param z1 Z position of the voxel.
 	*/
-	void searchForHole(size_t, size_t, size_t);
+	void searchForHole(size_t x, size_t y, size_t z);
 
 	/**
-	* Terrain constructor.
+	* @brief Water voxel color.
 	*/
 	engine::Color waterColor;
 
 	/**
-	* Terrain constructor.
+	* @brief Terrain voxel color.
 	*/
 	engine::Color terrainColor;
 
 	/**
-	* Terrain constructor.
+	* @brief Terrain corrosion scale.
 	*/
 	float terrainCorrosionScale;
 
 	/**
-	* Terrain constructor.
+	* @brief Terrain evaporation scale.
 	*/
 	float waterEvaporationScale;
 };

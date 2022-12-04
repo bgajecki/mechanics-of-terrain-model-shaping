@@ -15,9 +15,13 @@ class StageManager final : public Stage, public StageSetter, public engine::Scen
 {
 public:
 	/**
-	* StageManager constructor.
+	* @brief StageManager constructor.
 	*/
 	StageManager();
+	/**
+	* @brief StageManager destructor.
+	*/
+	~StageManager() = default;
 
 	virtual void Display() override final;
 
@@ -43,32 +47,32 @@ public:
 
 private:
 	/**
-	* Set options and prepare environment.
+	* @brief Set options and prepare environment.
 	*/
 	void setOptions();
 	
 	/**
-	* Options for the all stages.
+	* @brief Options for the all stages.
 	*/
 	Options options;
 
 	/**
-	* Current stage pointer.
+	* @brief Current stage pointer.
 	*/
 	Stage* currentStage;
 
 	/**
-	* Menu stage.
+	* @brief Menu stage.
 	*/
 	Menu* menu;
 
 	/**
-	* Mechanic presentation on meshes.
+	* @brief Mechanic presentation on meshes.
 	*/
 	Presentation* presentation;
 
 	/**
-	* Mechanic presentation on voxels.
+	* @brief Mechanic presentation on voxels.
 	*/
 	PresentationVoxel* presentationVoxel;
 };

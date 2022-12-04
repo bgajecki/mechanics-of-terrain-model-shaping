@@ -13,16 +13,22 @@
 #include <random>
 #include "UserInterface.hpp"
 
-
-
+/**
+* @brief Presentation of mechanic on meshes.
+*/
 class Presentation final : public Stage, public engine::Scene
 {
 public:
 
 	/**
-	* Presentation constructor.
+	* @brief Presentation constructor.
 	*/
 	Presentation(engine::SceneManager& sceneManager, Options&);
+
+	/**
+	* @brief PresentationVoxel destructor.
+	*/
+	~Presentation() = default;
 
 	virtual void Display() override final;
 
@@ -32,6 +38,8 @@ public:
 
 	virtual void OnKeyDown(unsigned char key, int x, int y) override final;
 
+	virtual void Motion(int x, int y) override final;
+
 	virtual void OnMouseClick(int button, int state, int x, int y) override final;
 
 	virtual void RefreshDisplay(int dt) override final;
@@ -39,122 +47,123 @@ public:
 	virtual void Time(int dt) override final;
 
 private:
+
 	/**
-	* Initialize shaders for futher use.
+	* @brief Initialize shaders for futher use.
 	*/
 	void initializeShaders();
 
 	/**
-	* Initialize user interface.
+	* @brief Initialize user interface.
 	*/
 	void initializeUserInterface();
 
 	/**
-	* Initialize objects.
+	* @brief Initialize objects.
 	*/
 	void initializeObjects();
 
 	/**
-	* Presentation constructor.
+	* @brief Options for the all stages.
 	*/
 	Options& options;
 
 	/**
-	* Terrain mesh.
+	* @brief Terrain mesh.
 	*/
 	Terrain* terrain;
 
 	/**
-	* Rain effect.
+	* @brief Rain effect.
 	*/
 	Rain* rain;
 
 	/**
-	* Water plane and it's impact on the terrain.
+	* @brief Water plane and it's impact on the terrain.
 	*/
 	Water* water;
 
 	/**
-	* Skybox responsible for the passage of time.
+	* @brief Skybox responsible for the passage of time.
 	*/
 	Skybox* skybox;
 	/**
-	* Presentation constructor.
+	* @brief Presentation constructor.
 	*/
 	engine::Texture texture;
 
 	/**
-	* Texture of RainOff button.
+	* @brief Texture of RainOff button.
 	*/
 	engine::Texture rainOffTexture;
 
 	/**
-	* Texture of RainOff button.
+	* @brief Texture of RainOff button.
 	*/
 	engine::Texture rainOnTexture;
 
 	/**
-	* Texture of the sky.
+	* @brief Texture of the sky.
 	*/
 	engine::Texture skyTexture;
 
 	/**
-	* Texture of pause button.
+	* @brief Texture of pause button.
 	*/
 	engine::Texture pauseTexture;
 
 	/**
-	* Texture of play button.
+	* @brief Texture of play button.
 	*/
 	engine::Texture playTexture;
 
 	/**
-	* Texture of playx2 button.
+	* @brief Texture of playx2 button.
 	*/
 	engine::Texture playx2Texture;
 	
 	/**
-	* Texture of playx3 button.
+	* @brief Texture of playx3 button.
 	*/
 	engine::Texture playx3Texture;
 
 	/**
-	* Terrain program contains mesh vertex, tessellation control, tessellation evaluation and fragment shaders.
+	* @brief Terrain program contains mesh vertex, tessellation control, tessellation evaluation and fragment shaders.
 	*/
 	engine::Program terrainProgram;
 
 	/**
-	* Rain program contains rain vertex, fragment and geometry shaders.
+	* @brief Rain program contains rain vertex, fragment and geometry shaders.
 	*/
 	engine::Program rainProgram;
 
 	/**
-	* Water program contains mesh vertex, tessellation control, water tessellation evaluation and water fragment shaders.
+	* @brief Water program contains mesh vertex, tessellation control, water tessellation evaluation and water fragment shaders.
 	*/
 	engine::Program waterProgram;
 	
 	/**
-	* Skybox program contains simply vertex and fragment shaders.
+	* @brief Skybox program contains simply vertex and fragment shaders.
 	*/
 	engine::Program skyboxProgram;
 
 	/**
-	* User interface.
+	* @brief User interface.
 	*/
 	UserInterface userInterface;
 
 	/**
-	* Limitation for too fast presentation work.
+	* @brief Limitation for too fast presentation work.
 	*/
 	int timeLimit;
 
 	/**
-	* Time pausue.
+	* @brief Time pausue.
 	*/
 	bool pause;
 
 	/**
-	* Rotation angle to imitate water flow.
+	* @brief Rotation angle to imitate water flow.
 	*/
 	float rotationAngle;
 };

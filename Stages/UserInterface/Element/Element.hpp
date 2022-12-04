@@ -6,60 +6,75 @@
 #include <algorithm>
 
 /**
-* Terrain constructor.
+* @brief Type of 2D position of the user interface element.
 */
 using Position2d = glm::vec2;
 
 /**
-* Terrain constructor.
+* @brief Type of 2D size of the user interface element.
 */
 using Size = glm::vec2;
 
+/**
+* @brief User interface element class.
+*/
 class Element : public engine::Mesh
 {
 public:
 	/**
-	* Terrain constructor.
+	* Element constructor.
 	*/
 	Element();
+
 	/**
-	* Terrain constructor.
+	* Element destructor.
 	*/
 	~Element() = default;
 
 	/**
-	* Terrain constructor.
+	* @brief Set element position.
+	* @param position New element position.
 	*/
-	void setPosition(Position2d);
+	void setPosition(Position2d position);
 
 	/**
-	* Terrain constructor.
+	* @brief Get element position.
+	* @return Element position.
 	*/
 	Position2d getPosition() const;
 
 	/**
-	* Terrain constructor.
+	* @brief Set element size.
+	* @param position New element size.
 	*/
 	void setSize(Size);
 
 	/**
-	* Terrain constructor.
+	* @brief Get element size.
+	* @return Element size.
 	*/
 	Size getSize() const;
 
 	/**
-	* Terrain constructor.
+	* @brief Activated after mouse move.
+	* @param x Horizontal cursor position.
+	* @param y Vertical cursor position.
 	*/
-	virtual void mouseMove(int, int) = 0;
+	virtual void mouseMove(int x, int y);
 
 	/**
-	* Terrain constructor.
+	* @brief Activated after mouse click.
+	* @param button The code of the pressed key on the mouse.
+	* @param state Clicked or released.
+	* @param x Horizontal cursor position.
+	* @param y Vertical cursor position.
 	*/
-	virtual void mouseClick(int, int, int, int) = 0;
+	virtual void mouseClick(int button, int state, int x, int y);
+
 private:
 
 	/**
-	* Terrain constructor.
+	* 2D size of the user interface element.
 	*/
 	Size size;
 };

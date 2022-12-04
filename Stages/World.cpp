@@ -93,12 +93,12 @@ void World::rain()
 
 void World::terrainPhysics(size_t x, size_t y, size_t z)
 {
-    if (this->terrainFall(x, y, z))
+    if (this->terrainFalls(x, y, z))
         return;
     this->terrainCorrosion(x, y, z);
 }
 
-bool World::terrainFall(size_t x, size_t y, size_t z)
+bool World::terrainFalls(size_t x, size_t y, size_t z)
 {
     engine::Voxel& voxel = this->voxels[x][y][z];
     if (y > 0)
@@ -182,11 +182,11 @@ void World::searchForHole(size_t x, size_t y, size_t z)
 
 void World::waterPhysics(size_t x, size_t y, size_t z)
 {
-    if (this->waterFall(x, y, z))
+    if (this->waterFalls(x, y, z))
         return;
-    if (this->waterPush(x, y, z))
+    if (this->waterPushes(x, y, z))
         return;
-    this->waterEvaporation(x, y, z);
+    this->waterEvaporations(x, y, z);
 }
 
 bool World::vonNeumannNeighborhoodInteraction(size_t x1, size_t y1, size_t z1, size_t x2, size_t y2, size_t z2, VoxelInteractionCondition condition, VoxelInteractionFunction function)
@@ -274,7 +274,7 @@ bool World::mooreNeighborhoodInteraction(size_t x1, size_t y1, size_t z1, size_t
     return false;
 }
 
-bool World::waterFall(size_t x, size_t y, size_t z)
+bool World::waterFalls(size_t x, size_t y, size_t z)
 {
     engine::Voxel& voxel = this->voxels[x][y][z];
     auto condition = [](const auto& voxel) -> auto {
@@ -297,7 +297,7 @@ bool World::waterFall(size_t x, size_t y, size_t z)
     }
 }
 
-bool World::waterPush(size_t x, size_t y, size_t z)
+bool World::waterPushes(size_t x, size_t y, size_t z)
 {
     engine::Voxel& voxel = this->voxels[x][y][z];
     auto condition = [](const auto& voxel) -> auto {
@@ -337,7 +337,7 @@ bool World::waterPush(size_t x, size_t y, size_t z)
     return this->mooreNeighborhoodInteraction(x, y, z, x, y - 1, z, condition, function);
 }
 
-void World::waterEvaporation(size_t x, size_t y, size_t z)
+void World::waterEvaporations(size_t x, size_t y, size_t z)
 {
     engine::Voxel& voxel = this->voxels[x][y][z];
     if (y + 1 < this->chunkSize)

@@ -7,13 +7,20 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <GL/freeglut.h>
 
+/**
+* @brief Menu of application.
+*/
 class Menu final : public Stage,  public engine::Scene, public UserInterface
 {
 public:
 	/**
-	* Menu constructor.
+	* @brief Menu constructor.
 	*/
 	Menu(engine::SceneManager& sceneManager, Options& options);
+
+	/**
+	* @brief Menu destructor.
+	*/
 	~Menu() = default;
 
 	virtual void Display() override final;
@@ -34,52 +41,52 @@ public:
 
 private:
 	/**
-	* Presentation constructor.
+	* @brief Initialize shaders for futher use.
 	*/
 	void initializeShaders();
 
 	/**
-	* Presentation constructor.
+	* @brief Initialize user interface.
 	*/
 	void initializeUserInterface();
 
 	/**
-	* Presentation constructor.
+	* @brief Options for the all stages.
 	*/
 	Options& options;
 
 	/**
-	* Presentation constructor.
+	* @brief Texture of mesh presentation button.
 	*/
 	engine::Texture presentationMeshTexture;
+
 	/**
-	* Presentation constructor.
+	* @brief Texture of voxel presentation button.
 	*/
 	engine::Texture presentationVoxelTexture;
+
 	/**
-	* Presentation constructor.
+	* @brief Texture of exit button.
 	*/
 	engine::Texture exitTexture;
+
 	/**
-	* Presentation constructor.
+	* @brief Texture of background.
 	*/
 	engine::Texture backgroundTexture;
 
 	/**
-	* Presentation constructor.
+	* @brief Texture of activated mesh presentation button.
 	*/
 	engine::Texture presentationMeshActiveTexture;
-	/**
-	* Presentation constructor.
-	*/
-	engine::Texture presentationVoxelActiveTexture;
-	/**
-	* Presentation constructor.
-	*/
-	engine::Texture exitActiveTexture;
 
 	/**
-	* Presentation constructor.
+	* @brief Texture of activated voxel presentation button.
 	*/
-	GLint textureSampler;
+	engine::Texture presentationVoxelActiveTexture;
+
+	/**
+	* @brief Texture of activated exit button.
+	*/
+	engine::Texture exitActiveTexture;
 };

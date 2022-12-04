@@ -1,26 +1,23 @@
 ﻿#pragma once
 
 /**
-* @brief Abstract class
-* 
-* Stage manager have two stages,
-* the first one for menu and the second one for mechanic presentation.
+* @brief Interface class created for stage chaning.
 */
 class StageSetter
 {
 public:
 	/**
-	* StageManager constructor.
+	* @brief Set current stage to menu.
 	*/
 	virtual void setCurrentStageToMenu() = 0;
 
 	/**
-	* StageManager constructor.
+	* @brief Set current stage to mechanic presentation on meshes.
 	*/
 	virtual void setCurrentStageToPresentation() = 0;
 
 	/**
-	* StageManager constructor.
+	* @brief Set current stage to mechanic presentation on voxels.
 	*/
 	virtual void setCurrentStageToPresentationVoxel() = 0;
 };

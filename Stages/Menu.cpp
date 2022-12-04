@@ -1,7 +1,7 @@
 ﻿#include "Menu.hpp"
 
 Menu::Menu(engine::SceneManager& sceneManager, Options& options)
-	: engine::Scene(sceneManager), options(options), textureSampler(1)
+	: engine::Scene(sceneManager), options(options)
 {
 	this->initializeShaders();
 	this->initializeUserInterface();

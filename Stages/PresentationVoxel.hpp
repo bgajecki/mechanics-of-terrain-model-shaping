@@ -11,15 +11,22 @@
 #include "Skybox.hpp"
 #include "UserInterface/UserInterface.hpp"
 
+
+/**
+* @brief Presentation of mechanic on voxels.
+*/
 class PresentationVoxel final : public Stage, public engine::Scene
 {
-	
 public:
-
 	/**
-	* Presentation constructor.
+	* @brief PresentationVoxel constructor.
 	*/
 	PresentationVoxel(engine::SceneManager&, Options&);
+
+	/**
+	* @brief PresentationVoxel destructor.
+	*/
+	~PresentationVoxel() = default;
 
 	virtual void Display() override final;
 
@@ -28,6 +35,8 @@ public:
 	virtual void Special(int key, int x, int y) override final;
 
 	virtual void OnKeyDown(unsigned char key, int x, int y) override final;
+
+	virtual void Motion(int x, int y) override final;
 
 	virtual void OnMouseClick(int button, int state, int x, int y) override final;
 
@@ -38,94 +47,92 @@ public:
 private:
 	
 	/**
-	* Initialize shaders for futher use.
+	* @brief Initialize shaders for futher use.
 	*/
 	void initializeShaders();
 
 	/**
-	* Initialize user interface.
+	* @brief Initialize user interface.
 	*/
 	void initializeUserInterface();
 
 	/**
-	* Initialize objects.
+	* @brief Initialize objects.
 	*/
 	void initializeObjects();
 
-
-
 	/**
-	* Options for the all stages.
+	* @brief Options for the all stages.
 	*/
 	Options& options;
 
 	/**
-	* Texture of the sky.
+	* @brief Texture of the sky.
 	*/
 	engine::Texture skyTexture; 
 	
 	/**
-	* Texture of RainOff button.
+	* @brief Texture of RainOff button.
 	*/
 	engine::Texture rainOffTexture;
 
 	/**
-	* Texture of RainOn button.
+	* @brief Texture of RainOn button.
 	*/
 	engine::Texture rainOnTexture;
 
 	/**
-	* Texture of pause button.
+	* @brief Texture of pause button.
 	*/
 	engine::Texture pauseTexture;
 
 	/**
-	* Texture of play button.
+	* @brief Texture of play button.
 	*/
 	engine::Texture playTexture;
 
 	/**
-	* Texture of playx2 button.
+	* @brief Texture of playx2 button.
 	*/
 	engine::Texture playx2Texture;
 
 	/**
-	* Texture of playx3 button.
+	* @brief Texture of playx3 button.
 	*/
 	engine::Texture playx3Texture;
 
 	/**
-	* Chunk program contains chunk vertex and fragment shaders.
+	* @brief Chunk program contains chunk vertex and fragment shaders.
 	*/
 	engine::Program chunkProgram;
 	
 	/**
-	* Skybox program contains simply vertex and fragment shaders.
+	* @brief Skybox program contains simply vertex and fragment shaders.
 	*/
 	engine::Program skyboxProgram;
 
 	/**
-	* User interface.
+	* @brief User interface.
 	*/
 	UserInterface userInterface;
 
 	/**
-	* Single biom presenting mechanics of terrain model shaping using voxel technicues.
+	* @brief Single biom presenting mechanics of terrain model shaping using voxel technicues.
 	*/
 	World* world;
 
 	/**
-	* Skybox responsible for the passage of time.
+	* @brief Skybox responsible for the passage of time.
 	*/
 	Skybox* skybox;
 
 	/**
-	* Limitation for too fast presentation work.
+	* @brief Limitation for too fast presentation work.
 	*/
 	int timeLimit;
 
 	/**
-	* Time pausue.
+	* @brief Time pausue.
 	*/
 	bool pause;
 };

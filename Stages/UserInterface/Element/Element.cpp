@@ -1,6 +1,4 @@
 #include "Element.hpp"
-#include "Element.hpp"
-#include "Element.hpp"
 
 Element::Element()
 	: size(0.0f, 0.0f)
@@ -51,4 +49,12 @@ void Element::setSize(Size size)
 Size Element::getSize() const
 {
 	return this->size;
+}
+
+void Element::mouseMove(int x, int y)
+{
+}
+
+void Element::mouseClick(int button, int state, int x, int y)
+{
 }
