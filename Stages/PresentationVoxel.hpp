@@ -2,33 +2,31 @@
 
 #include <Scene.hpp>
 #include "Stage.hpp"
-#include "Terrain.hpp"
-#include "Rain.hpp"
-#include "Water.hpp"
-#include "Skybox.hpp"
 #include "Options.hpp"
+#include "World.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <cmath>
 #include <GL/glut.h>
-#include <random>
-#include "UserInterface.hpp"
+#include <array>
+#include "Skybox.hpp"
+#include "UserInterface/UserInterface.hpp"
+
 
 /**
-* @brief Presentation of mechanic on meshes.
+* @brief Presentation of mechanic on voxels.
 */
-class Presentation final : public Stage, public engine::Scene
+class PresentationVoxel final : public Stage, public engine::Scene
 {
 public:
-
 	/**
-	* @brief Presentation constructor.
+	* @brief PresentationVoxel constructor.
 	*/
-	Presentation(engine::SceneManager& sceneManager, Options&);
+	PresentationVoxel(engine::SceneManager&, Options&);
 
 	/**
 	* @brief PresentationVoxel destructor.
 	*/
-	~Presentation() = default;
+	~PresentationVoxel() = default;
 
 	virtual void Display() override final;
 
@@ -42,12 +40,12 @@ public:
 
 	virtual void OnMouseClick(int button, int state, int x, int y) override final;
 
-	virtual void RefreshDisplay(int dt) override final;
+	virtual void RefreshDisplay(int t) override final;
 
-	virtual void Time(int dt) override final;
+	virtual void Time(int t) override final;
 
 private:
-
+	
 	/**
 	* @brief Initialize shaders for futher use.
 	*/
@@ -69,43 +67,19 @@ private:
 	Options& options;
 
 	/**
-	* @brief Terrain mesh.
+	* @brief Texture of the sky.
 	*/
-	Terrain* terrain;
-
-	/**
-	* @brief Rain effect.
-	*/
-	Rain* rain;
-
-	/**
-	* @brief Water plane and it's impact on the terrain.
-	*/
-	Water* water;
-
-	/**
-	* @brief Skybox responsible for the passage of time.
-	*/
-	Skybox* skybox;
-	/**
-	* @brief Presentation constructor.
-	*/
-	engine::Texture texture;
-
+	engine::Texture skyTexture; 
+	
 	/**
 	* @brief Texture of RainOff button.
 	*/
 	engine::Texture rainOffTexture;
 
 	/**
-	* @brief Texture of RainOff button.
+	* @brief Texture of RainOn button.
 	*/
 	engine::Texture rainOnTexture;
-
-	/**
-	* @brief Texture of the sky.
-	*/
-	engine::Texture skyTexture;
 
 	/**
 	* @brief Texture of pause button.
@@ -121,26 +95,16 @@ private:
 	* @brief Texture of playx2 button.
 	*/
 	engine::Texture playx2Texture;
-	
+
 	/**
 	* @brief Texture of playx3 button.
 	*/
 	engine::Texture playx3Texture;
 
 	/**
-	* @brief Terrain program contains mesh vertex, tessellation control, tessellation evaluation and fragment shaders.
+	* @brief Chunk program contains chunk vertex and fragment shaders.
 	*/
-	engine::Program terrainProgram;
-
-	/**
-	* @brief Rain program contains rain vertex, fragment and geometry shaders.
-	*/
-	engine::Program rainProgram;
-
-	/**
-	* @brief Water program contains mesh vertex, tessellation control, water tessellation evaluation and water fragment shaders.
-	*/
-	engine::Program waterProgram;
+	engine::Program chunkProgram;
 	
 	/**
 	* @brief Skybox program contains simply vertex and fragment shaders.
@@ -153,6 +117,16 @@ private:
 	UserInterface userInterface;
 
 	/**
+	* @brief Single biom presenting mechanics of terrain model shaping using voxel technicues.
+	*/
+	World* world;
+
+	/**
+	* @brief Skybox responsible for the passage of time.
+	*/
+	Skybox* skybox;
+
+	/**
 	* @brief Limitation for too fast presentation work.
 	*/
 	int timeLimit;
@@ -161,9 +135,4 @@ private:
 	* @brief Time pausue.
 	*/
 	bool pause;
-
-	/**
-	* @brief Rotation angle to imitate water flow.
-	*/
-	float rotationAngle;
 };

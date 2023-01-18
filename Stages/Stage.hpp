@@ -1,57 +1,64 @@
 ﻿#pragma once
 
 /**
-* @brief Abstrac class for stage.
+* @brief Interface class for stage.
 */
 class Stage
 {
 public:
 	/**
-	* Responsible for displaying screen.
+	* @brief Responsible for displaying screen.
 	*/
-	virtual void Display() {};
+	virtual void Display() = 0;
 
 	/**
-	* Fit the changed screen size.
+	* @brief Fit the changed screen size.
 	* @param width New width of screen size.
 	* @param height New height of screen size.
 	*/
-	virtual void Reshape(int width, int height) {};
+	virtual void Reshape(int width, int height) = 0;
 
 	/**
-	* Special keyboard callback.
+	* @brief Special keyboard callback.
 	* @param key The code of the pressed key on the keyboard.
 	* @param x Horizontal cursor position.
 	* @param y Vertical cursor position.
 	*/
-	virtual void Special(int key, int x, int y) {};
+	virtual void Special(int key, int x, int y) = 0;
 
 	/**
-	* Keyboard callback.
+	* @brief Keyboard callback.
 	* @param key The code of the pressed key on the keyboard.
 	* @param x Horizontal cursor position.
 	* @param y Vertical cursor position.
 	*/
-	virtual void OnKeyDown(unsigned char key, int x, int y) {};
+	virtual void OnKeyDown(unsigned char key, int x, int y) = 0;
 
 	/**
-	* Mouse callback.
-	* @param button  The code of the pressed key on the mouse.
+	* @brief Motion callback.
+	* @param x Horizontal cursor position.
+	* @param y Vertical cursor position.
+	*/
+	virtual void Motion(int x, int y) = 0;
+
+	/**
+	* @brief Mouse callback.
+	* @param button The code of the pressed key on the mouse.
 	* @param state Clicked or released.
 	* @param x Horizontal cursor position.
 	* @param y Vertical cursor position.
 	*/
-	virtual void OnMouseClick(int button, int state, int x, int y) {};
+	virtual void OnMouseClick(int button, int state, int x, int y) = 0;
 
 	/**
-	* Timer callback responsible for refreshing display screen.
-	* @param t Time period.
+	* @brief Timer callback responsible for refreshing display screen.
+	* @param dt Time period.
 	*/
-	virtual void RefreshDisplay(int t) {};
+	virtual void RefreshDisplay(int dt) = 0;
 
 	/**
-	* Timer callback resposible for operation of the application.
-	* @param t Time period.
+	* @brief Timer callback resposible for operation of the application.
+	* @param dt Time period.
 	*/
-	virtual void Time(int t) {};
+	virtual void Time(int dt) = 0;
 };

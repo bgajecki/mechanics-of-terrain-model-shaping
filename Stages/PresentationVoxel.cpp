@@ -1,9 +1,9 @@
-﻿#include "Presentation.hpp"
+﻿#include "PresentationVoxel.hpp"
 
-Presentation::Presentation(engine::SceneManager& sceneManager, Options& options)
-	: engine::Scene(sceneManager), options(options), timeLimit(50000), rotationAngle(0.0f), pause(false)
+PresentationVoxel::PresentationVoxel(engine::SceneManager& sceneManager, Options& options)
+	: engine::Scene(sceneManager), options(options), timeLimit(50000), pause(false)
 {
-	this->projection = glm::perspective(45.0f, 1.0f * this->options.width / this->options.height, 0.1f, 50.0f);
+	this->projection = glm::perspective(45.0f, this->options.width / this->options.height, 0.01f, 50.0f);
 	this->view = this->camera.getViewMatrix();
 
 	this->initializeShaders();
@@ -11,15 +11,15 @@ Presentation::Presentation(engine::SceneManager& sceneManager, Options& options)
 	this->initializeObjects();
 }
 
-void Presentation::Display()
+void PresentationVoxel::Display()
 {
 }
 
-void Presentation::Reshape(int width, int height)
+void PresentationVoxel::Reshape(int width, int height)
 {
 }
 
-void Presentation::Special(int key, int x, int y)
+void PresentationVoxel::Special(int key, int x, int y)
 {
 	const float update = 2.0f;
 	switch (key)
@@ -37,14 +37,14 @@ void Presentation::Special(int key, int x, int y)
 		this->view = this->camera.getViewMatrix();
 		break;
 	case GLUT_KEY_RIGHT:
-		this->camera.rotate(update,0.0f);
+		this->camera.rotate(update, 0.0f);
 		this->view = this->camera.getViewMatrix();
 		break;
 	}
 
 }
 
-void Presentation::OnKeyDown(unsigned char key, int x, int y)
+void PresentationVoxel::OnKeyDown(unsigned char key, int x, int y)
 {
 	const float update = 0.1f;
 	switch (key)
@@ -53,73 +53,61 @@ void Presentation::OnKeyDown(unsigned char key, int x, int y)
 		this->camera.moveAccordingToDirection({ 0.0, update, 0.0 });
 		this->view = this->camera.getViewMatrix();
 		this->skybox->setPosition(this->camera.getPosition());
-		this->rain->setPosition(this->camera.getPosition());
 		break;
 	case 'e':
 		this->camera.moveAccordingToDirection({ 0.0, -update, 0.0 });
 		this->view = this->camera.getViewMatrix();
 		this->skybox->setPosition(this->camera.getPosition());
-		this->rain->setPosition(this->camera.getPosition());
 		break;
 	case 'w':
 		this->camera.moveAccordingToDirection({ 0.0, 0.0, update });
 		this->view = this->camera.getViewMatrix();
 		this->skybox->setPosition(this->camera.getPosition());
-		this->rain->setPosition(this->camera.getPosition());
 		break;
 	case 's':
 		this->camera.moveAccordingToDirection({ 0.0, 0.0, -update });
 		this->view = this->camera.getViewMatrix();
 		this->skybox->setPosition(this->camera.getPosition());
-		this->rain->setPosition(this->camera.getPosition());
 		break;
 	case 'a':
 		this->camera.moveAccordingToDirection({ update, 0.0, 0.0 });
 		this->view = this->camera.getViewMatrix();
 		this->skybox->setPosition(this->camera.getPosition());
-		this->rain->setPosition(this->camera.getPosition());
 		break;
 	case 'd':
 		this->camera.moveAccordingToDirection({ -update, 0.0, 0.0 });
 		this->view = this->camera.getViewMatrix();
 		this->skybox->setPosition(this->camera.getPosition());
-		this->rain->setPosition(this->camera.getPosition());
 		break;
 	}
 
 
 }
 
-void Presentation::Motion(int x, int y)
+void PresentationVoxel::Motion(int x, int y)
 {
 }
 
-void Presentation::OnMouseClick(int button, int state, int x, int y)
+void PresentationVoxel::OnMouseClick(int button, int state, int x, int y)
 {
 	this->userInterface.mouseClick(button, state, x, y);
 }
 
-void Presentation::RefreshDisplay(int t)
+void PresentationVoxel::RefreshDisplay(int t)
 {
 }
 
-void Presentation::Time(int dt)
+void PresentationVoxel::Time(int dt)
 {
 	static int time = 0;
 
 	if (this->pause)
 		return;
-	
-	if (time % 10000 == 0)
-	{
-		this->rain->run();
-		this->rotationAngle = this->rotationAngle > glm::radians(359.0f) ? glm::radians(0.0f) : this->rotationAngle + glm::radians(1.0f);
-	}
 
 	if (time >= this->timeLimit)
 	{
-		this->water->update(this->rain->isRaining);
-		this->skybox->update();	
+		this->world->update(dt);
+		this->skybox->update();
 		time = 0;
 	}
 	else
@@ -128,42 +116,17 @@ void Presentation::Time(int dt)
 	}
 }
 
-void Presentation::initializeShaders()
+void PresentationVoxel::initializeShaders()
 {
-	this->terrainProgram = sceneManager.createProgram();
-	this->rainProgram = sceneManager.createProgram();
-	this->waterProgram = sceneManager.createProgram();
+	this->chunkProgram = sceneManager.createProgram();
 	this->skyboxProgram = sceneManager.createProgram();
 	engine::Program userInterfaceProgram = sceneManager.createProgram();
 
-	engine::Shader temp_shader = sceneManager.createShader(GL_VERTEX_SHADER, "./shaders/mesh.vs");
-	this->terrainProgram->addShader(temp_shader);
-	this->waterProgram->addShader(temp_shader);
+	engine::Shader temp_shader = sceneManager.createShader(GL_VERTEX_SHADER, "./shaders/chunk.vs");
+	this->chunkProgram->addShader(temp_shader);
 
-	temp_shader = sceneManager.createShader(GL_TESS_CONTROL_SHADER, "./shaders/mesh.tc");
-	this->terrainProgram->addShader(temp_shader);
-	this->waterProgram->addShader(temp_shader);
-
-	temp_shader = sceneManager.createShader(GL_TESS_EVALUATION_SHADER, "./shaders/mesh.te");
-	this->terrainProgram->addShader(temp_shader);
-
-	temp_shader = sceneManager.createShader(GL_TESS_EVALUATION_SHADER, "./shaders/water.te");
-	this->waterProgram->addShader(temp_shader);
-
-	temp_shader = sceneManager.createShader(GL_FRAGMENT_SHADER, "./shaders/terrain.fs");
-	this->terrainProgram->addShader(temp_shader);
-
-	temp_shader = sceneManager.createShader(GL_FRAGMENT_SHADER, "./shaders/water.fs");
-	this->waterProgram->addShader(temp_shader);
-
-	temp_shader = sceneManager.createShader(GL_VERTEX_SHADER, "./shaders/rain.vs");
-	this->rainProgram->addShader(temp_shader);
-
-	temp_shader = sceneManager.createShader(GL_FRAGMENT_SHADER, "./shaders/rain.fs");
-	this->rainProgram->addShader(temp_shader);
-
-	temp_shader = sceneManager.createShader(GL_GEOMETRY_SHADER, "./shaders/rain.gs");
-	this->rainProgram->addShader(temp_shader);
+	temp_shader = sceneManager.createShader(GL_FRAGMENT_SHADER, "./shaders/chunk.fs");
+	this->chunkProgram->addShader(temp_shader);
 
 	temp_shader = sceneManager.createShader(GL_VERTEX_SHADER, "./shaders/simply.vs");
 	this->skyboxProgram->addShader(temp_shader);
@@ -173,22 +136,10 @@ void Presentation::initializeShaders()
 	this->skyboxProgram->addShader(temp_shader);
 	userInterfaceProgram->addShader(temp_shader);
 
-	this->terrainProgram->createUniform(glUniformMatrix4fv, "projection", 1, GL_FALSE, &this->projection[0][0]);
-	this->terrainProgram->createUniform(glUniformMatrix4fv, "view", 1, GL_FALSE, &this->view[0][0]);
-	this->terrainProgram->createUniform(glUniformMatrix4fv, "model", 1, GL_FALSE, &this->model[0][0]);
-	this->terrainProgram->createUniform(glUniform3fv, "viewPosition", 1, &this->camera.getViewPosition()[0]);
-	this->terrainProgram->createUniform(glUniform1i, "textureSampler", 0);
-
-	this->rainProgram->createUniform(glUniformMatrix4fv, "projection", 1, GL_FALSE, &this->projection[0][0]);
-	this->rainProgram->createUniform(glUniformMatrix4fv, "view", 1, GL_FALSE, &this->view[0][0]);
-	this->rainProgram->createUniform(glUniformMatrix4fv, "model", 1, GL_FALSE, &this->model[0][0]);
-
-	this->waterProgram->createUniform(glUniformMatrix4fv, "projection", 1, GL_FALSE, &this->projection[0][0]);
-	this->waterProgram->createUniform(glUniformMatrix4fv, "view", 1, GL_FALSE, &this->view[0][0]);
-	this->waterProgram->createUniform(glUniformMatrix4fv, "model", 1, GL_FALSE, &this->model[0][0]);
-	this->waterProgram->createUniform(glUniform3fv, "viewPosition", 1, &this->camera.getViewPosition()[0]);
-	this->waterProgram->createUniform(glUniform1fv, "rotationAngle", 1, &this->rotationAngle);
-	this->waterProgram->createUniform(glUniform1i, "textureSampler", 0);
+	this->chunkProgram->createUniform(glUniformMatrix4fv, "projection", 1, GL_FALSE, &this->projection[0][0]);
+	this->chunkProgram->createUniform(glUniformMatrix4fv, "view", 1, GL_FALSE, &this->view[0][0]);
+	this->chunkProgram->createUniform(glUniformMatrix4fv, "model", 1, GL_FALSE, &this->model[0][0]);
+	this->chunkProgram->createUniform(glUniform3fv, "viewPosition", 1, &this->camera.getViewPosition()[0]);
 
 	this->skyboxProgram->createUniform(glUniformMatrix4fv, "projection", 1, GL_FALSE, &this->projection[0][0]);
 	this->skyboxProgram->createUniform(glUniformMatrix4fv, "view", 1, GL_FALSE, &this->view[0][0]);
@@ -200,7 +151,7 @@ void Presentation::initializeShaders()
 	this->userInterface.setProgram(userInterfaceProgram);
 }
 
-void Presentation::initializeUserInterface()
+void PresentationVoxel::initializeUserInterface()
 {
 	this->userInterface.resize(this->options.width, this->options.height);
 	this->rainOffTexture.load("./textures/rainOff.jpg");
@@ -213,16 +164,16 @@ void Presentation::initializeUserInterface()
 	//auto buttonPreDrawSettings = [this](auto button) {
 	//	this->model = button->getModelMatrix();
 	//};
-
+	
 	Button* temp_button = this->createObject<Button>();
 	temp_button->setPosition({ 0.03f, 0.02f });
 	temp_button->setSize({ 0.05f, 0.03f });
 	temp_button->textures.push_back(this->rainOffTexture);
 	temp_button->textures.push_back(this->rainOnTexture);
 	temp_button->setCallback([this](bool status) {
-		this->rain->isRaining = status;
-		});
-	//temp_button->setPreDrawSettings(buttonPreDrawSettings);
+		this->world->isRaining = status;
+	});
+	/*temp_button->setPreDrawSettings(buttonPreDrawSettings);*/
 	this->userInterface.add(temp_button);
 
 	temp_button = this->createObject<Button>();
@@ -265,30 +216,13 @@ void Presentation::initializeUserInterface()
 	this->userInterface.add(temp_button);
 }
 
-void Presentation::initializeObjects()
+void PresentationVoxel::initializeObjects()
 {
-	//auto meshPreDrawSettings = [this](auto mesh) {
-	//	this->model = mesh->getModelMatrix();
+	//auto preDrawSettings = [this](auto object) {
+	//	this->model = object->getModelMatrix();
 	//};
 
-	this->texture.load("./textures/noise.jpg");
 	this->skyTexture.load("./textures/sky.jpg");
-
-	this->terrain = this->createObject<Terrain>();
-	this->terrain->textures.push_back(texture);
-	this->terrain->setPosition({ 0.0f, 0.0f, 0.0f });
-	this->terrain->setProgram(terrainProgram);
-	//this->terrain->setPreDrawSettings(meshPreDrawSettings);
-
-	this->water = this->createObject<Water>(terrain);
-	this->water->textures.push_back(texture);
-	this->water->setProgram(waterProgram);
-	//this->water->setPreDrawSettings(meshPreDrawSettings);
-
-	this->rain = this->createObject<Rain>();
-	this->rain->setProgram(rainProgram);
-	this->rain->setPosition(this->camera.getPosition());
-	//this->rain->setPreDrawSettings(meshPreDrawSettings);
 
 	this->skybox = this->createObject<Skybox>();
 	this->skybox->setPosition(this->camera.getPosition());
@@ -296,6 +230,10 @@ void Presentation::initializeObjects()
 	this->skybox->textures.push_back(skyTexture);
 	//this->skydome->setPreDrawSettings(preDrawSettings);
 
-	this->terrainProgram->createUniform(glUniform3fv, "lightPosition", 2, this->skybox->getLights());
-	this->waterProgram->createUniform(glUniform3fv, "lightPosition", 2, this->skybox->getLights());
+	this->chunkProgram->createUniform(glUniform3fv, "lightPosition", 2, this->skybox->getLights());
+
+	this->world = this->createObject<World>();
+	this->world->setPosition({ 0.0f, 0.0f, 0.0f });
+	this->world->setProgram(chunkProgram);
+	//this->world->setPreDrawSettings(preDrawSettings);
 }

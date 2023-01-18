@@ -5,14 +5,18 @@ cmake_minimum_required (VERSION 3.8)
 
 project ("mechanics-of-terrain-model-shaping")
 
-add_executable (${PROJECT_NAME} WIN32 main.cpp)
+add_executable (${PROJECT_NAME} 
+#WIN32 
+main.cpp
+)
 
 set(INCLUDES PRIVATE
-	${PROJECT_SOURCE_DIR}
-	${PROJECT_SOURCE_DIR}/Engine
-	${PROJECT_SOURCE_DIR}/Stages
-	${PROJECT_SOURCE_DIR}/lib/freeglut/include
-	${PROJECT_SOURCE_DIR}/lib/glew/include
+	${CMAKE_SOURCE_DIR}
+	${CMAKE_SOURCE_DIR}/engine
+	${CMAKE_SOURCE_DIR}/stages
+	${CMAKE_SOURCE_DIR}/lib/freeglut/include
+	${CMAKE_SOURCE_DIR}/lib/glew/include
+	#${CMAKE_SOURCE_DIR}/lib/stb
 )
 
 target_include_directories (${PROJECT_NAME} PRIVATE ${INCLUDES})
@@ -26,17 +30,19 @@ elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
     set(GLEW PRIVATE ${PROJECT_SOURCE_DIR}/lib/glew/Win32/glew32.lib)
 endif()
 
-add_subdirectory("Engine")
-add_subdirectory("Stages")
+add_subdirectory("lib/glm")
+add_subdirectory("engine")
+add_subdirectory("stages")
 
 target_link_libraries (${PROJECT_NAME}
 	${FREEGLUT}
 	${GLEW}
-	Shaders
-	Stages
+	engine
+	stages
 	opengl32
 	glu32
 	gdi32
+	glm
 )
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
@@ -52,3 +58,13 @@ set (CMAKE_EXE_LINKER_FLAGS
 	${CMAKE_EXE_LINKER_FLAGS}
 	"-Wall -static-libstdc++ -static-libgcc"
 )
+
+add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/shaders $<TARGET_FILE_DIR:${PROJECT_NAME}>/shaders
+	COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/textures $<TARGET_FILE_DIR:${PROJECT_NAME}>/textures
+	COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/objects $<TARGET_FILE_DIR:${PROJECT_NAME}>/objects
+	COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/freeglut.dll $<TARGET_FILE_DIR:${PROJECT_NAME}>
+	COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/glew32.dll $<TARGET_FILE_DIR:${PROJECT_NAME}>
+)
+
+
