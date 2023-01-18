@@ -7,7 +7,7 @@ std::unique_ptr<StageManager> stageManager;
 
 void Display()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	stageManager->Display();
 	glutSwapBuffers();
 }
@@ -70,7 +70,10 @@ int main()
 		/* Problem: glewInit failed, something is seriously wrong. */
 		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
 	}
-	fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
+	fprintf(stdout, "OpenGL version supported by this platform %s\n", glGetString(GL_VERSION));
+	fprintf(stdout, "Using GLEW %s\n", glewGetString(GLEW_VERSION));
+	fprintf(stdout, "Using freeglut %d\n", glutGet(GLUT_VERSION));
+	fprintf(stdout, "Using GLM %d\n", GLM_VERSION);
 	
 	glutDisplayFunc(Display);
 	glutReshapeFunc(Reshape);

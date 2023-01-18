@@ -7,6 +7,7 @@ World::World()
     this->setVoxelSize(0.005f);
     this->setVoxelTypeAttribute(TERRAIN, terrainColor);
     this->setVoxelTypeAttribute(WATER, waterColor);
+    // Create terrain model.
     this->executeOnSelectedVoxels(0u, this->chunkSize, 0u, this->chunkSize / 2u, 0, this->chunkSize, [this](size_t x, size_t y, size_t z) {
         int dx = x - this->chunkSize / 2u;
         int dz = z - this->chunkSize / 2u;
@@ -63,6 +64,7 @@ void World::physics()
 
 void World::rain()
 {
+    // Create water voxels.
     if (this->isRaining)
     {
         constexpr size_t waterUnits = 3u;
@@ -139,6 +141,7 @@ void World::terrainCorrosion(size_t x, size_t y, size_t z)
 
 void World::searchForHole(size_t x, size_t y, size_t z)
 {
+    // Not used - water pushes method is better.
     engine::Voxel& voxel = this->voxels[x][y][z];
     for (int near_x = -6; near_x < 7; near_x++)
     {
@@ -191,6 +194,7 @@ void World::waterPhysics(size_t x, size_t y, size_t z)
 
 bool World::vonNeumannNeighborhoodInteraction(size_t x1, size_t y1, size_t z1, size_t x2, size_t y2, size_t z2, VoxelInteractionCondition condition, VoxelInteractionFunction function)
 {
+    // West.
     if (x2 > 0u)
     {
         if (condition(this->voxels[x2 - 1][y2][z2]))
@@ -199,7 +203,7 @@ bool World::vonNeumannNeighborhoodInteraction(size_t x1, size_t y1, size_t z1, s
             return true;
         }
     }
-
+    // East.
     if (x2 + 1 < this->chunkSize)
     {
         if (condition(this->voxels[x2 + 1][y2][z2]))
@@ -208,7 +212,7 @@ bool World::vonNeumannNeighborhoodInteraction(size_t x1, size_t y1, size_t z1, s
             return true;
         }
     }
-
+    // North.
     if (z2 > 0u)
     {
         if (condition(this->voxels[x2][y2][z2 - 1]))
@@ -217,7 +221,7 @@ bool World::vonNeumannNeighborhoodInteraction(size_t x1, size_t y1, size_t z1, s
             return true;
         }
     }
-    
+    // South.
     if (z2 + 1 < this->chunkSize)
     {
         if (condition(this->voxels[x2][y2][z2 + 1]))
@@ -234,7 +238,7 @@ bool World::mooreNeighborhoodInteraction(size_t x1, size_t y1, size_t z1, size_t
 {
     if (this->vonNeumannNeighborhoodInteraction(x1, y1, z1, x2, y2, z2, condition, function))
         return true;
-
+    // South west.
     if (x2 > 0u && z2 > 0u)
     {
         if (condition(this->voxels[x2 - 1][y2][z2 - 1]))
@@ -243,7 +247,7 @@ bool World::mooreNeighborhoodInteraction(size_t x1, size_t y1, size_t z1, size_t
             return true;
         }
     }
-
+    // South east.
     if (x2 + 1 < this->chunkSize && z2 > 0u)
     {
         if (condition(this->voxels[x2 + 1][y2][z2 - 1]))
@@ -252,7 +256,7 @@ bool World::mooreNeighborhoodInteraction(size_t x1, size_t y1, size_t z1, size_t
             return true;
         }
     }
-
+    // North west.
     if (x2 > 0u && z2 + 1 < this->chunkSize)
     {
         if (condition(this->voxels[x2 - 1][y2][z2 + 1]))
@@ -261,7 +265,7 @@ bool World::mooreNeighborhoodInteraction(size_t x1, size_t y1, size_t z1, size_t
             return true;
         }
     }
-
+    // North east.
     if (x2 + 1 < this->chunkSize && z2 + 1 < this->chunkSize)
     {
         if (condition(this->voxels[x2 + 1][y2][z2 + 1]))
@@ -287,7 +291,7 @@ bool World::waterFalls(size_t x, size_t y, size_t z)
         return true;
     };
     
-    // Down
+    // Down.
     if (y > 0)
     {
         if (condition(this->voxels[x][y - 1][z]))
@@ -310,18 +314,18 @@ bool World::waterPushes(size_t x, size_t y, size_t z)
         int i = 1;
         while (1)
         {
-
+            // Overflow and underflow check.
             if (x2 + xDiff * i < 1 || z2 + zDiff * i < 1
                 || x2 + xDiff * i > this->chunkSize - 1 || z2 + zDiff * i > this->chunkSize - 1)
             {
                 return false;
             }
-
+            // Water voxel can be pushed.
             if (this->voxels[x2 + xDiff * i][y2][z2 + zDiff * i].isActive() == false)
             {
                 break;
             }
-
+            // End water pushes process - no more water.
             if (this->voxels[x2 + xDiff * i][y2][z2 + zDiff * i].getType() != WATER)
             {
                 return false;
@@ -342,8 +346,7 @@ void World::waterEvaporations(size_t x, size_t y, size_t z)
     engine::Voxel& voxel = this->voxels[x][y][z];
     if (y + 1 < this->chunkSize)
     {
-        if (this->voxels[x][y + 1][z].isActive() == false
-            && this->voxels[x][y + 1][z].getType() != WATER)
+        if (this->voxels[x][y + 1][z].isActive() == false)
         {
             voxel.decreaseLifespan(this->waterEvaporationScale);
         }

@@ -20,26 +20,46 @@ void main()
 	if(gl_InvocationID == 0)
 	{
         const int MINIMAL_TESSELATION_LEVEL = 1;
-        const int MAXIMAL_TESSELATION_LEVEL = 16;
-        const float MINIMAL_DISTANCE = 0;
+        const int MAXIMAL_TESSELATION_LEVEL = 32;
+        const float MINIMAL_DISTANCE = 1;
         const float MAXIMAL_DISTANCE = 5;
 
         vec4 pos0 = view * model * gl_in[0].gl_Position;
         vec4 pos1 = view * model * gl_in[1].gl_Position;
         vec4 pos2 = view * model * gl_in[2].gl_Position;
+        vec4 pos3 = view * model * gl_in[3].gl_Position;
 
         float distance0 = clamp((abs(pos0.z)-MINIMAL_DISTANCE) / (MAXIMAL_DISTANCE-MINIMAL_DISTANCE), 0.0, 1.0);
         float distance1 = clamp((abs(pos1.z)-MINIMAL_DISTANCE) / (MAXIMAL_DISTANCE-MINIMAL_DISTANCE), 0.0, 1.0);
         float distance2 = clamp((abs(pos2.z)-MINIMAL_DISTANCE) / (MAXIMAL_DISTANCE-MINIMAL_DISTANCE), 0.0, 1.0);
+        float distance3 = clamp((abs(pos3.z)-MINIMAL_DISTANCE) / (MAXIMAL_DISTANCE-MINIMAL_DISTANCE), 0.0, 1.0);
 
-        float level0 = mix(MAXIMAL_TESSELATION_LEVEL, MINIMAL_TESSELATION_LEVEL, distance0);
-        float level1 = mix(MAXIMAL_TESSELATION_LEVEL, MINIMAL_TESSELATION_LEVEL, distance1);
-        float level2 = mix(MAXIMAL_TESSELATION_LEVEL, MINIMAL_TESSELATION_LEVEL, distance2);
+	    if(gl_PatchVerticesIn == 3)
+	    {
+            float level0 = mix(MAXIMAL_TESSELATION_LEVEL, MINIMAL_TESSELATION_LEVEL, distance0);
+            float level1 = mix(MAXIMAL_TESSELATION_LEVEL, MINIMAL_TESSELATION_LEVEL, distance1);
+            float level2 = mix(MAXIMAL_TESSELATION_LEVEL, MINIMAL_TESSELATION_LEVEL, distance2);
 
-        gl_TessLevelOuter[0] = level0;
-        gl_TessLevelOuter[1] = level1;
-        gl_TessLevelOuter[2] = level2;
+            gl_TessLevelOuter[0] = level0;
+            gl_TessLevelOuter[1] = level1;
+            gl_TessLevelOuter[2] = level2;
 
-        gl_TessLevelInner[0] = max(max(level0, level1), level2);
+            gl_TessLevelInner[0] = max(max(level0, level1), level2);
+        }
+        else if(gl_PatchVerticesIn == 4)
+        {
+            float level0 = mix(MAXIMAL_TESSELATION_LEVEL, MINIMAL_TESSELATION_LEVEL, min(distance2, distance0));
+            float level1 = mix(MAXIMAL_TESSELATION_LEVEL, MINIMAL_TESSELATION_LEVEL, min(distance0, distance1));
+            float level2 = mix(MAXIMAL_TESSELATION_LEVEL, MINIMAL_TESSELATION_LEVEL, min(distance1, distance3));
+            float level3 = mix(MAXIMAL_TESSELATION_LEVEL, MINIMAL_TESSELATION_LEVEL, min(distance3, distance2));
+
+            gl_TessLevelOuter[0] = level0;
+            gl_TessLevelOuter[1] = level1;
+            gl_TessLevelOuter[2] = level2;
+            gl_TessLevelOuter[3] = level3;
+
+            gl_TessLevelInner[0] = max(level1, level3);
+            gl_TessLevelInner[1] = max(level0, level2);
+        }
 	}
 }

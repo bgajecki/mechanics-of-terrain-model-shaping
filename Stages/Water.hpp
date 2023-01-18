@@ -11,9 +11,10 @@
 class Water final : public engine::Mesh
 {
 	/**
-	* @brief Type of reference to terrain vertices.
+	* @brief Type of to terrain vertices.
 	*/
-	using TerrainVertices = std::vector<engine::MeshVertex>&;
+	using TerrainVertices = std::vector<engine::MeshVertex>;
+
 public:
 	/**
 	* @brief Water constructor.
@@ -35,7 +36,12 @@ private:
 	/**
 	* @brief Reference to terrain vertices.
 	*/
-	TerrainVertices terrainVertices;
+	TerrainVertices& terrainVertices;
+
+	/**
+	* @brief Copy of terrain vertices.
+	*/
+	TerrainVertices terrainVerticesCopy;
 
 	/**
 	* @brief Water level.
@@ -56,4 +62,9 @@ private:
 	* @brief Scale of terrain change.
 	*/
 	float scale;
+
+	/**
+	* @brief Max change
+	*/
+	float maxChange;
 };

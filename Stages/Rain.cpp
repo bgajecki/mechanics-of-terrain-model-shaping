@@ -13,6 +13,7 @@ Rain::Rain()
 
 void Rain::run()
 {
+	// Particle life cycle.
 	for (auto& particle : this->particles)
 	{
 		particle.lifespan -= 1.0f;
@@ -23,6 +24,7 @@ void Rain::run()
 		}
 	}
 	
+	// Create particles.
 	if (this->isRaining)
 	{
 		constexpr unsigned renderSize = 3u;

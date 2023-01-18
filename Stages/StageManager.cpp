@@ -71,18 +71,17 @@ void StageManager::setCurrentStageToPresentationVoxel()
 
 void StageManager::setOptions()
 {
+	glEnable(GL_BLEND);
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_DEPTH_TEST);
+
 	glutFullScreen();
 	glutSetCursor(GLUT_CURSOR_LEFT_ARROW); // Left arrow
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_BLEND);
-	glEnable(GL_MULTISAMPLE);
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-	//glPolygonMode(GL_FRONT, GL_LINE);
 	glDepthFunc(GL_LESS);
-	glEnable(GL_DEPTH_TEST);
-	glPatchParameteri(GL_PATCH_VERTICES, 3u);
+	glPatchParameteri(GL_PATCH_VERTICES, 4u);
 
 	this->options.width = glutGet(GLUT_SCREEN_WIDTH);
 	this->options.height = glutGet(GLUT_SCREEN_HEIGHT);

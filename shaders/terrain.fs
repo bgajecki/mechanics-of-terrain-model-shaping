@@ -21,17 +21,17 @@ void main()
 	color.b = 0.0;
 
 	vec3 lightColor[2];
-	float ambientStrength = 0.4;
+	float ambientStrength = 0.3;
 	float diffuseStrength[2];
 	float specularStrength[2];
 
 	lightColor[0] = yellow;
-	diffuseStrength[0] = 0.5;
+	diffuseStrength[0] = 0.6;
 	specularStrength[0] = 0.4;
 
 	lightColor[1] = white;
-	diffuseStrength[1] = 0.4;
-	specularStrength[1] = 0.3;
+	diffuseStrength[1] = 0.3;
+	specularStrength[1] = 0.2;
 
     vec3 ambient = ambientStrength * white;
 	vec3 normal = normalize(FragNormal);
@@ -49,11 +49,11 @@ void main()
 
 		if(i == 0)
 		{
-			color.rgb = (ambient + clamp(diffuse, 0, 1) + clamp(specular, 0, 1)) * color.rgb;
+			color.rgb = (ambient + clamp(diffuse, 0, 1) + specular) * color.rgb;
 		}
 		else
 		{
-			color.rgb = (ambient + clamp(diffuse, 0, 1) + clamp(specular, 0, 1)) * color.rgb;
+			color.rgb = (ambient + clamp(diffuse, 0, 1) + specular) * color.rgb;
 		}
 	}
 }

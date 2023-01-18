@@ -74,14 +74,14 @@ protected:
 	* @param scale Scale level.
 	* @return Scaled width.
 	*/
-	float widthScaling(float scale) const;
+	int widthScaling(float scale) const;
 
 	/**
 	* @brief Return height scaled by passed parameter.
 	* @param scale Scale level.
 	* @return Scaled height.
 	*/
-	float heightScaling(float scale) const;
+	int heightScaling(float scale) const;
 
 	/**
 	* @brief Return scale from scaled width.

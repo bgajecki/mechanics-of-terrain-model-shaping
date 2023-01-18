@@ -31,17 +31,17 @@ void Element::setSize(Size size)
 	this->size = size;
 	this->vertices.clear();
 	engine::MeshVertex vertex;
-	vertex.position = engine::Position(-this->size.x / 2.0f, -this->size.y / 2.0f, 0.0f);
+	vertex.position = engine::Position(static_cast<int>(-this->size.x / 2.0f), static_cast<int>(-this->size.y / 2.0f), 0.0f);
 	vertex.normal = engine::Normal(0.0f, 0.0f, 1.0f);
 	vertex.attribute = engine::TextureCoordinate(0.0f, 0.0f);
 	this->vertices.push_back(vertex);
-	vertex.position = engine::Position(this->size.x / 2.0f, -this->size.y / 2.0f, 0.0f);
+	vertex.position = engine::Position(static_cast<int>(this->size.x / 2.0f), static_cast<int>(-this->size.y / 2.0f), 0.0f);
 	vertex.attribute = engine::TextureCoordinate(1.0f, 0.0f);
 	this->vertices.push_back(vertex);
-	vertex.position = engine::Position(this->size.x / 2.0f, this->size.y / 2.0f, 0.0f);
+	vertex.position = engine::Position(static_cast<int>(this->size.x / 2.0f), static_cast<int>(this->size.y / 2.0f), 0.0f);
 	vertex.attribute = engine::TextureCoordinate(1.0f, 1.0f);
 	this->vertices.push_back(vertex);
-	vertex.position = engine::Position(-this->size.x / 2.0f, this->size.y / 2.0f, 0.0f);
+	vertex.position = engine::Position(static_cast<int>(-this->size.x / 2.0f), static_cast<int>(this->size.y / 2.0f), 0.0f);
 	vertex.attribute = engine::TextureCoordinate(0.0f, 1.0f);
 	this->vertices.push_back(vertex);
 }

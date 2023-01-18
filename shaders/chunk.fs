@@ -24,11 +24,12 @@ void main()
 	specularStrength[0] = 0.4;
 
 	lightColor[1] = white;
-	diffuseStrength[1] = 0.4;
-	specularStrength[1] = 0.3;
+	diffuseStrength[1] = 0.2;
+	specularStrength[1] = 0.1;
 
     vec3 ambient = ambientStrength * white;
 	vec3 normal = normalize(FragNormal);
+	color.a = FragColor.a;
 
 	for(uint i = 0; i < 2; i++)
 	{
@@ -43,12 +44,12 @@ void main()
 
 		if(i == 0)
 		{
-			color.rgb = (ambient + clamp(diffuse, 0, 1) + clamp(specular, 0, 1)) * FragColor.rgb;
-			color.a = FragColor.a;
+			color.rgb = (ambient + clamp(diffuse, 0, 1) + specular) * FragColor.rgb;
+			
 		}
 		else
 		{
-			color.rgb += (ambient + clamp(diffuse, 0, 1) + clamp(specular, 0, 1)) * FragColor.rgb;
+			color.rgb += (ambient + clamp(diffuse, 0, 1) + specular) * FragColor.rgb;
 		}
 	}
 }

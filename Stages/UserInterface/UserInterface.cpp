@@ -20,14 +20,14 @@ void UserInterface::mouseClick(int button, int state, int x, int y)
 		element->mouseClick(button, state, x, y);
 }
 
-float UserInterface::widthScaling(float scale) const
+int UserInterface::widthScaling(float scale) const
 {
-	return scale * this->width;
+	return static_cast<int>(scale * this->width);
 }
 
-float UserInterface::heightScaling(float scale) const
+int UserInterface::heightScaling(float scale) const
 {
-	return scale * this->height;
+	return static_cast<int>(scale * this->height);
 }
 
 float UserInterface::getWidthScale(float scaledWidth) const
@@ -52,7 +52,7 @@ void UserInterface::resize(float width, float height)
 
 	this->width = width;
 	this->height = height;
-	this->projection = glm::ortho(0.0f, width, height, 0.0f, 0.0f, 2.0f);
+	this->projection = glm::ortho(0.0f, width, height, 0.0f, -2.0f, 2.0f);
 
 	for (auto& element : this->elements)
 	{

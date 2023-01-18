@@ -3,7 +3,7 @@
 PresentationVoxel::PresentationVoxel(engine::SceneManager& sceneManager, Options& options)
 	: engine::Scene(sceneManager), options(options), timeLimit(50000), pause(false)
 {
-	this->projection = glm::perspective(45.0f, 1.0f * this->options.width / this->options.height, 0.1f, 50.0f);
+	this->projection = glm::perspective(45.0f, this->options.width / this->options.height, 0.01f, 50.0f);
 	this->view = this->camera.getViewMatrix();
 
 	this->initializeShaders();
