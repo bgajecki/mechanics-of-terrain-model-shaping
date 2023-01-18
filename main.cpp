@@ -3,15 +3,11 @@
 #include <memory>
 #include <GL/glut.h>
 
-constexpr unsigned REFRESH_DISPLAY = 13u; // 60 fps
-constexpr unsigned TIME = 100u; // 100 milisekund
-constexpr char WINDOW_NAME[] = "Mechanics of terrain model shaping";
-
 std::unique_ptr<StageManager> stageManager;
 
 void Display()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	stageManager->Display();
 	glutSwapBuffers();
 }
@@ -36,29 +32,34 @@ void OnMouseClick(int button, int state, int x, int y)
 	stageManager->OnMouseClick(button, state, x, y);
 }
 
-void RefreshDisplay(int t)
+void Motion(int x, int y)
 {
-	glutPostRedisplay();
-	glutTimerFunc(REFRESH_DISPLAY, RefreshDisplay, 0);
+	stageManager->Motion(x, y);
 }
 
-void Time(int t)
+void RefreshDisplay(int dt)
 {
-	stageManager->Time(t);
-	glutTimerFunc(1u, Time, 0);
+	glutPostRedisplay();
+	glutTimerFunc(0u, RefreshDisplay, 0);
+}
+
+void Time(int dt)
+{
+	stageManager->Time(dt);
+	glutTimerFunc(0u, Time, 0);
 }
 
 //int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 int main()
 {
+	constexpr char WINDOW_NAME[] = "Mechanics of terrain model shaping";
+
 	int argc = 1;
 	char* argv[1] = { (char*)"" };
 
-	srand((unsigned int)time(NULL));
 	SetProcessDPIAware();
-
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_MULTISAMPLE);
 	glutInitWindowSize(GetSystemMetrics(SM_CXSCREEN),
 		GetSystemMetrics(SM_CYSCREEN)); // Maximum resolution
 	glutCreateWindow(WINDOW_NAME);
@@ -69,24 +70,21 @@ int main()
 		/* Problem: glewInit failed, something is seriously wrong. */
 		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
 	}
-	fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
-
-	glutFullScreen();
+	fprintf(stdout, "OpenGL version supported by this platform %s\n", glGetString(GL_VERSION));
+	fprintf(stdout, "Using GLEW %s\n", glewGetString(GLEW_VERSION));
+	fprintf(stdout, "Using freeglut %d\n", glutGet(GLUT_VERSION));
+	fprintf(stdout, "Using GLM %d\n", GLM_VERSION);
+	
 	glutDisplayFunc(Display);
 	glutReshapeFunc(Reshape);
 	glutSpecialFunc(Special);
 	glutKeyboardFunc(OnKeyDown);
+	glutPassiveMotionFunc(Motion);
 	glutMouseFunc(OnMouseClick);
-	glutSetCursor(GLUT_CURSOR_NONE); // Nothing
 
 	/* Timer functions */
-	glutTimerFunc(REFRESH_DISPLAY, RefreshDisplay, 0);
-	glutTimerFunc(1u, Time, 0);
-
-	// OpenGL initialization
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_BLEND);
-	glEnable(GL_TEXTURE_2D);
+	glutTimerFunc(0u, RefreshDisplay, 0);
+	glutTimerFunc(30u, Time, 0);
 
 	stageManager = std::make_unique<StageManager>();
 

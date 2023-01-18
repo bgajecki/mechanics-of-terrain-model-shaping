@@ -2,14 +2,27 @@
 
 project ("stages")
 
-aux_source_directory(${PROJECT_SOURCE_DIR} SRCS)
+aux_source_directory(${PROJECT_SOURCE_DIR} STAGES)
+aux_source_directory(${PROJECT_SOURCE_DIR}/UserInterface/ USER_INTERFACE)
+aux_source_directory(${PROJECT_SOURCE_DIR}/UserInterface/Element ELEMENT)
+aux_source_directory(${PROJECT_SOURCE_DIR}/UserInterface/Button/ BUTTON)
+
+set(SRCS
+	${STAGES}
+	${USER_INTERFACE}
+	${ELEMENT}
+	${BUTTON}
+)
 
 add_library(${PROJECT_NAME} STATIC ${SRCS})
 
 target_include_directories (${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR})
 
-set(INCLUDES PRIVATE
+set(INCLUDES PUBLIC
 	${PROJECT_SOURCE_DIR}
+	${PROJECT_SOURCE_DIR}/UserInterface
+	${PROJECT_SOURCE_DIR}/UserInterface/Element
+	${PROJECT_SOURCE_DIR}/UserInterface/Button
 	${CMAKE_SOURCE_DIR}/engine
 	${CMAKE_SOURCE_DIR}/lib/freeglut/include
 	${CMAKE_SOURCE_DIR}/lib/glew/include

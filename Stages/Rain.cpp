@@ -13,6 +13,7 @@ Rain::Rain()
 
 void Rain::run()
 {
+	// Particle life cycle.
 	for (auto& particle : this->particles)
 	{
 		particle.lifespan -= 1.0f;
@@ -23,12 +24,13 @@ void Rain::run()
 		}
 	}
 	
+	// Create particles.
 	if (this->isRaining)
 	{
-		const unsigned renderSize = 3u;
+		constexpr unsigned renderSize = 3u;
 		std::random_device device;
 		std::mt19937 generator(device());
-		std::uniform_real_distribution<float> distribution(-1.f, 1.f), y_distrubution(1.9f, 2.1f);
+		std::uniform_real_distribution<float> distribution(-3.f, 3.f), y_distrubution(1.9f, 2.1f);
 
 		unsigned i = 0u;
 		for (auto& particle : this->particles)

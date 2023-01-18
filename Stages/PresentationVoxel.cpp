@@ -1,48 +1,14 @@
 ﻿#include "PresentationVoxel.hpp"
 
-
 PresentationVoxel::PresentationVoxel(engine::SceneManager& sceneManager, Options& options)
-	: engine::Scene(sceneManager), options(options)
+	: engine::Scene(sceneManager), options(options), timeLimit(50000), pause(false)
 {
-	chunkVertexShader = sceneManager.createShader(GL_VERTEX_SHADER, "./shaders/chunk.vs");
-	chunkFragmentShader = sceneManager.createShader(GL_FRAGMENT_SHADER, "./shaders/chunk.fs");
+	this->projection = glm::perspective(45.0f, this->options.width / this->options.height, 0.01f, 50.0f);
+	this->view = this->camera.getViewMatrix();
 
-	chunkProgram = sceneManager.createProgram();
-
-	chunkProgram->addShader(chunkVertexShader);
-	chunkProgram->addShader(chunkFragmentShader);
-	
-	sceneManager.linkPrograms();
-	sceneManager.deleteShaders();
-
-	float height = glutGet(GLUT_SCREEN_HEIGHT);
-	float width = glutGet(GLUT_SCREEN_WIDTH);
-
-	this->projection = glm::perspective(45.0f, 1.0f * width / height, 0.1f, 100.0f);
-
-	this->camera.eye = { 0.0f, 0.5f, 0.5f };
-	yaw = 0.f;
-	pitch = 0.f;
-	this->camera.center.x = cos(this->pitch) * cos(this->yaw);
-	this->camera.center.y = sin(this->yaw);
-	this->camera.center.z = sin(this->pitch) * cos(this->yaw);
-	this->camera.up = { 0.0f, 1.0f, 0.0 };
-	this->view = glm::lookAt(this->camera.eye, this->camera.center, this->camera.up);
-
-	this->updateMvpMatrix();
-
-	chunkProgram->createUniform(glUniformMatrix4fv, "mvp", 1, GL_FALSE, &this->mvp[0][0]);
-	chunkProgram->createUniform(glUniform3fv, "viewPosition", 1, &this->camera.eye[0]);
-
-	world = this->createObject<World>();
-	world->refresh();
-	world->program = chunkProgram;
-
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	//glPolygonMode(GL_FRONT, GL_LINE);
-	glDepthFunc(GL_LESS);
-	glEnable(GL_DEPTH_TEST);
+	this->initializeShaders();
+	this->initializeUserInterface();
+	this->initializeObjects();
 }
 
 void PresentationVoxel::Display()
@@ -55,20 +21,24 @@ void PresentationVoxel::Reshape(int width, int height)
 
 void PresentationVoxel::Special(int key, int x, int y)
 {
-	const float two_degrees = 0.034906585f;
+	const float update = 2.0f;
 	switch (key)
 	{
 	case GLUT_KEY_UP:
-		this->rotateYaw(two_degrees);
+		this->camera.rotate(0.0f, update);
+		this->view = this->camera.getViewMatrix();
 		break;
 	case GLUT_KEY_DOWN:
-		this->rotateYaw(-two_degrees);
+		this->camera.rotate(0.0f, -update);
+		this->view = this->camera.getViewMatrix();
 		break;
 	case GLUT_KEY_LEFT:
-		this->rotatePitch(-two_degrees);
+		this->camera.rotate(-update, 0.0f);
+		this->view = this->camera.getViewMatrix();
 		break;
 	case GLUT_KEY_RIGHT:
-		this->rotatePitch(two_degrees);
+		this->camera.rotate(update, 0.0f);
+		this->view = this->camera.getViewMatrix();
 		break;
 	}
 
@@ -76,78 +46,194 @@ void PresentationVoxel::Special(int key, int x, int y)
 
 void PresentationVoxel::OnKeyDown(unsigned char key, int x, int y)
 {
-	float update = 0.1f;
+	const float update = 0.1f;
 	switch (key)
 	{
 	case 'q':
-		updateCameraPosition(this->camera.center.z, this->camera.eye.z, update);
+		this->camera.moveAccordingToDirection({ 0.0, update, 0.0 });
+		this->view = this->camera.getViewMatrix();
+		this->skybox->setPosition(this->camera.getPosition());
 		break;
 	case 'e':
-		updateCameraPosition(this->camera.center.z, this->camera.eye.z, -update);
+		this->camera.moveAccordingToDirection({ 0.0, -update, 0.0 });
+		this->view = this->camera.getViewMatrix();
+		this->skybox->setPosition(this->camera.getPosition());
 		break;
 	case 'w':
-		updateCameraPosition(this->camera.center.y, this->camera.eye.y, update);
+		this->camera.moveAccordingToDirection({ 0.0, 0.0, update });
+		this->view = this->camera.getViewMatrix();
+		this->skybox->setPosition(this->camera.getPosition());
 		break;
 	case 's':
-		updateCameraPosition(this->camera.center.y, this->camera.eye.y, -update);
+		this->camera.moveAccordingToDirection({ 0.0, 0.0, -update });
+		this->view = this->camera.getViewMatrix();
+		this->skybox->setPosition(this->camera.getPosition());
 		break;
 	case 'a':
-		updateCameraPosition(this->camera.center.x, this->camera.eye.x, -update);
+		this->camera.moveAccordingToDirection({ update, 0.0, 0.0 });
+		this->view = this->camera.getViewMatrix();
+		this->skybox->setPosition(this->camera.getPosition());
 		break;
 	case 'd':
-		updateCameraPosition(this->camera.center.x, this->camera.eye.x, update);
+		this->camera.moveAccordingToDirection({ -update, 0.0, 0.0 });
+		this->view = this->camera.getViewMatrix();
+		this->skybox->setPosition(this->camera.getPosition());
 		break;
 	}
 
 
 }
 
+void PresentationVoxel::Motion(int x, int y)
+{
+}
+
 void PresentationVoxel::OnMouseClick(int button, int state, int x, int y)
 {
+	this->userInterface.mouseClick(button, state, x, y);
 }
 
 void PresentationVoxel::RefreshDisplay(int t)
 {
 }
 
-void PresentationVoxel::Time(int t)
+void PresentationVoxel::Time(int dt)
 {
-	world->update(t);
+	static int time = 0;
+
+	if (this->pause)
+		return;
+
+	if (time >= this->timeLimit)
+	{
+		this->world->update(dt);
+		this->skybox->update();
+		time = 0;
+	}
+	else
+	{
+		time++;
+	}
 }
 
-void PresentationVoxel::rotateYaw(float angle)
+void PresentationVoxel::initializeShaders()
 {
-	const float full_turn = 6.28318530718f;
-	this->yaw += angle;
-	if (this->yaw > full_turn)
-		this->yaw = 0.f;
-	else if (this->yaw < -full_turn)
-		this->yaw = 0.f;
-	this->camera.center.x = cos(this->pitch) * cos(this->yaw);
-	this->camera.center.y = sin(this->yaw);
-	this->camera.center.z = sin(this->pitch) * cos(this->yaw);
-	this->view = glm::lookAt(this->camera.eye, this->camera.center, this->camera.up);
-	this->updateMvpMatrix();
+	this->chunkProgram = sceneManager.createProgram();
+	this->skyboxProgram = sceneManager.createProgram();
+	engine::Program userInterfaceProgram = sceneManager.createProgram();
+
+	engine::Shader temp_shader = sceneManager.createShader(GL_VERTEX_SHADER, "./shaders/chunk.vs");
+	this->chunkProgram->addShader(temp_shader);
+
+	temp_shader = sceneManager.createShader(GL_FRAGMENT_SHADER, "./shaders/chunk.fs");
+	this->chunkProgram->addShader(temp_shader);
+
+	temp_shader = sceneManager.createShader(GL_VERTEX_SHADER, "./shaders/simply.vs");
+	this->skyboxProgram->addShader(temp_shader);
+	userInterfaceProgram->addShader(temp_shader);
+
+	temp_shader = sceneManager.createShader(GL_FRAGMENT_SHADER, "./shaders/simply.fs");
+	this->skyboxProgram->addShader(temp_shader);
+	userInterfaceProgram->addShader(temp_shader);
+
+	this->chunkProgram->createUniform(glUniformMatrix4fv, "projection", 1, GL_FALSE, &this->projection[0][0]);
+	this->chunkProgram->createUniform(glUniformMatrix4fv, "view", 1, GL_FALSE, &this->view[0][0]);
+	this->chunkProgram->createUniform(glUniformMatrix4fv, "model", 1, GL_FALSE, &this->model[0][0]);
+	this->chunkProgram->createUniform(glUniform3fv, "viewPosition", 1, &this->camera.getViewPosition()[0]);
+
+	this->skyboxProgram->createUniform(glUniformMatrix4fv, "projection", 1, GL_FALSE, &this->projection[0][0]);
+	this->skyboxProgram->createUniform(glUniformMatrix4fv, "view", 1, GL_FALSE, &this->view[0][0]);
+	this->skyboxProgram->createUniform(glUniformMatrix4fv, "model", 1, GL_FALSE, &this->model[0][0]);
+	this->skyboxProgram->createUniform(glUniform1i, "textureSampler", 0);
+
+	userInterfaceProgram->createUniform(glUniformMatrix4fv, "model", 1, GL_FALSE, &this->model[0][0]);
+
+	this->userInterface.setProgram(userInterfaceProgram);
 }
 
-void PresentationVoxel::rotatePitch(float angle)
+void PresentationVoxel::initializeUserInterface()
 {
-	const float full_turn = 6.28318530718f;
-	this->pitch += angle;
-	if (this->pitch > full_turn)
-		this->pitch = 0.f;
-	else if (this->pitch < -full_turn)
-		this->pitch = 0.f;
-	this->camera.center.x = cos(this->pitch) * cos(this->yaw);
-	this->camera.center.z = sin(this->pitch) * cos(this->yaw);
-	this->view = glm::lookAt(this->camera.eye, this->camera.center, this->camera.up);
-	this->updateMvpMatrix();
+	this->userInterface.resize(this->options.width, this->options.height);
+	this->rainOffTexture.load("./textures/rainOff.jpg");
+	this->rainOnTexture.load("./textures/rainOn.jpg");
+	this->pauseTexture.load("./textures/pause.png");
+	this->playTexture.load("./textures/play.png");
+	this->playx2Texture.load("./textures/playx2.png");
+	this->playx3Texture.load("./textures/playx3.png");
+
+	//auto buttonPreDrawSettings = [this](auto button) {
+	//	this->model = button->getModelMatrix();
+	//};
+	
+	Button* temp_button = this->createObject<Button>();
+	temp_button->setPosition({ 0.03f, 0.02f });
+	temp_button->setSize({ 0.05f, 0.03f });
+	temp_button->textures.push_back(this->rainOffTexture);
+	temp_button->textures.push_back(this->rainOnTexture);
+	temp_button->setCallback([this](bool status) {
+		this->world->isRaining = status;
+	});
+	/*temp_button->setPreDrawSettings(buttonPreDrawSettings);*/
+	this->userInterface.add(temp_button);
+
+	temp_button = this->createObject<Button>();
+	temp_button->setPosition({ 0.015f, 0.06f });
+	temp_button->setSize({ 0.015f, 0.025f });
+	temp_button->textures.push_back(this->pauseTexture);
+	temp_button->setCallback([this](bool status) {
+		this->pause = true;
+		});
+	this->userInterface.add(temp_button);
+
+	temp_button = this->createObject<Button>();
+	temp_button->setPosition({ 0.035f, 0.06f });
+	temp_button->setSize({ 0.015f, 0.025f });
+	temp_button->textures.push_back(this->playTexture);
+	temp_button->setCallback([this](bool status) {
+		this->timeLimit = 50000;
+		this->pause = false;
+		});
+	this->userInterface.add(temp_button);
+
+	temp_button = this->createObject<Button>();
+	temp_button->setPosition({ 0.055f, 0.06f });
+	temp_button->setSize({ 0.02f, 0.025f });
+	temp_button->textures.push_back(this->playx2Texture);
+	temp_button->setCallback([this](bool status) {
+		this->timeLimit = 25000;
+		this->pause = false;
+		});
+	this->userInterface.add(temp_button);
+
+	temp_button = this->createObject<Button>();
+	temp_button->setPosition({ 0.080f, 0.06f });
+	temp_button->setSize({ 0.025f, 0.025f });
+	temp_button->textures.push_back(this->playx3Texture);
+	temp_button->setCallback([this](bool status) {
+		this->timeLimit = 16666;
+		this->pause = false;
+		});
+	this->userInterface.add(temp_button);
 }
 
-void PresentationVoxel::updateCameraPosition(float& center, float& eye, float update)
+void PresentationVoxel::initializeObjects()
 {
-	center += update;
-	eye += update;
-	this->view = glm::lookAt(this->camera.eye, this->camera.center, this->camera.up);
-	this->updateMvpMatrix();
+	//auto preDrawSettings = [this](auto object) {
+	//	this->model = object->getModelMatrix();
+	//};
+
+	this->skyTexture.load("./textures/sky.jpg");
+
+	this->skybox = this->createObject<Skybox>();
+	this->skybox->setPosition(this->camera.getPosition());
+	this->skybox->setProgram(skyboxProgram);
+	this->skybox->textures.push_back(skyTexture);
+	//this->skydome->setPreDrawSettings(preDrawSettings);
+
+	this->chunkProgram->createUniform(glUniform3fv, "lightPosition", 2, this->skybox->getLights());
+
+	this->world = this->createObject<World>();
+	this->world->setPosition({ 0.0f, 0.0f, 0.0f });
+	this->world->setProgram(chunkProgram);
+	//this->world->setPreDrawSettings(preDrawSettings);
 }

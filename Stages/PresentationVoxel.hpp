@@ -7,18 +7,26 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <cmath>
 #include <GL/glut.h>
+#include <array>
+#include "Skybox.hpp"
+#include "UserInterface/UserInterface.hpp"
 
 
-
-
+/**
+* @brief Presentation of mechanic on voxels.
+*/
 class PresentationVoxel final : public Stage, public engine::Scene
 {
 public:
-
 	/**
-	* Presentation constructor.
+	* @brief PresentationVoxel constructor.
 	*/
 	PresentationVoxel(engine::SceneManager&, Options&);
+
+	/**
+	* @brief PresentationVoxel destructor.
+	*/
+	~PresentationVoxel() = default;
 
 	virtual void Display() override final;
 
@@ -28,6 +36,8 @@ public:
 
 	virtual void OnKeyDown(unsigned char key, int x, int y) override final;
 
+	virtual void Motion(int x, int y) override final;
+
 	virtual void OnMouseClick(int button, int state, int x, int y) override final;
 
 	virtual void RefreshDisplay(int t) override final;
@@ -35,14 +45,94 @@ public:
 	virtual void Time(int t) override final;
 
 private:
+	
+	/**
+	* @brief Initialize shaders for futher use.
+	*/
+	void initializeShaders();
+
+	/**
+	* @brief Initialize user interface.
+	*/
+	void initializeUserInterface();
+
+	/**
+	* @brief Initialize objects.
+	*/
+	void initializeObjects();
+
+	/**
+	* @brief Options for the all stages.
+	*/
 	Options& options;
 
-	void rotateYaw(float);
-	void rotatePitch(float);
-	void updateCameraPosition(float&, float&, float);
+	/**
+	* @brief Texture of the sky.
+	*/
+	engine::Texture skyTexture; 
 	
-	float yaw, pitch;
+	/**
+	* @brief Texture of RainOff button.
+	*/
+	engine::Texture rainOffTexture;
+
+	/**
+	* @brief Texture of RainOn button.
+	*/
+	engine::Texture rainOnTexture;
+
+	/**
+	* @brief Texture of pause button.
+	*/
+	engine::Texture pauseTexture;
+
+	/**
+	* @brief Texture of play button.
+	*/
+	engine::Texture playTexture;
+
+	/**
+	* @brief Texture of playx2 button.
+	*/
+	engine::Texture playx2Texture;
+
+	/**
+	* @brief Texture of playx3 button.
+	*/
+	engine::Texture playx3Texture;
+
+	/**
+	* @brief Chunk program contains chunk vertex and fragment shaders.
+	*/
 	engine::Program chunkProgram;
-	engine::Shader chunkVertexShader, chunkFragmentShader;
+	
+	/**
+	* @brief Skybox program contains simply vertex and fragment shaders.
+	*/
+	engine::Program skyboxProgram;
+
+	/**
+	* @brief User interface.
+	*/
+	UserInterface userInterface;
+
+	/**
+	* @brief Single biom presenting mechanics of terrain model shaping using voxel technicues.
+	*/
 	World* world;
+
+	/**
+	* @brief Skybox responsible for the passage of time.
+	*/
+	Skybox* skybox;
+
+	/**
+	* @brief Limitation for too fast presentation work.
+	*/
+	int timeLimit;
+
+	/**
+	* @brief Time pausue.
+	*/
+	bool pause;
 };
